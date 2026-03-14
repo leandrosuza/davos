@@ -7,7 +7,7 @@
     "start": "node server/src/index.js",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "server": "node server/src/index.js",
-    "client": "npx http-server client -p 8080 --cors",
+    "client": "npx http-server client -p 3000 --cors",
     "install:all": "cd server && npm install"
   },
   "dependencies": {
