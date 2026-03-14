@@ -1,0 +1,427 @@
+/* ============================================
+   LAYOUT STYLES - Cards & Structure
+   ============================================ */
+
+/* Main Menu Layout */
+#helloDialog {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: flex-start;
+    justify-content: center;
+    position: relative;
+    margin: 0 auto;
+}
+
+/* Columns */
+.center-column {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* ============================================
+   PROFILE CARD
+   ============================================ */
+
+#profile-card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+    padding: 28px 24px;
+    width: 270px;
+    color: var(--card-text);
+    font-family: 'Ubuntu', sans-serif;
+    transition: background 0.3s, color 0.3s;
+}
+
+/* Guest State */
+.guest-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.guest-avatar .avatar-img {
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+    border-color: rgba(107, 114, 128, 0.5);
+    box-shadow: 0 4px 15px rgba(107, 114, 128, 0.3);
+}
+
+.guest-info {
+    text-align: left;
+}
+
+/* Auth Tabs */
+.auth-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.auth-tab {
+    flex: 1;
+    padding: 10px 16px;
+    background: var(--stat-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--card-text-secondary);
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.auth-tab:hover {
+    background: var(--stat-bg-hover);
+    color: var(--card-text);
+}
+
+.auth-tab.active {
+    background: linear-gradient(135deg, #00c8ff 0%, #0077aa 100%);
+    border-color: #00c8ff;
+    color: #fff;
+}
+
+/* Auth Tab Content */
+.auth-tab-content {
+    display: none;
+}
+
+.auth-tab-content.active {
+    display: block;
+}
+
+/* Auth Form */
+.auth-form {
+    margin-bottom: 15px;
+}
+
+.form-group {
+    margin-bottom: 12px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 12px;
+    color: var(--card-text-secondary);
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 14px;
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 8px;
+    color: var(--input-text);
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.form-group input:focus {
+    background: var(--input-bg-focus);
+    border-color: #00c8ff;
+}
+
+.form-group input::placeholder {
+    color: var(--tab-inactive);
+}
+
+.auth-btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.login-btn {
+    background: linear-gradient(135deg, #00c8ff 0%, #0077aa 100%);
+}
+
+.login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 200, 255, 0.35);
+}
+
+.register-btn {
+    background: linear-gradient(135deg, #8bc34a 0%, #689f38 100%);
+}
+
+.register-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(139, 195, 74, 0.4);
+}
+
+.guest-footer {
+    padding-top: 15px;
+    border-top: 1px solid var(--border-color);
+}
+
+.guest-footer p {
+    font-size: 11px;
+    color: var(--card-text-secondary);
+    text-align: center;
+    margin: 0;
+}
+
+/* Logged State */
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.profile-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.profile-info {
+    text-align: left;
+}
+
+.profile-balance {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.2) 0%, rgba(255, 160, 0, 0.15) 100%);
+    border: 1px solid rgba(255, 193, 7, 0.3);
+    padding: 8px 14px;
+    border-radius: 20px;
+}
+
+.balance-icon {
+    font-size: 14px;
+    color: #ffc107;
+}
+
+.balance-amount {
+    font-size: 14px;
+    font-weight: 700;
+    color: #ffc107;
+}
+
+/* Profile Actions */
+.profile-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.logout-btn {
+    width: 100%;
+    padding: 10px;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--card-text-secondary);
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.2s;
+}
+
+.logout-btn:hover {
+    background: rgba(244, 67, 54, 0.1);
+    border-color: rgba(244, 67, 54, 0.3);
+    color: #f44336;
+}
+
+/* ============================================
+   AVATAR & STATS
+   ============================================ */
+
+.avatar {
+    position: relative;
+    display: inline-block;
+    width: 55px;
+    height: 55px;
+}
+
+.avatar-img {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #00c8ff 0%, #0088cc 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #fff;
+    border: 2px solid rgba(0, 212, 255, 0.5);
+    box-shadow: 0 4px 15px rgba(0, 200, 255, 0.3);
+}
+
+.profile-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--card-text);
+    margin: 0 0 2px 0;
+}
+
+.profile-handle {
+    font-size: 12px;
+    color: var(--card-text-secondary);
+    display: block;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.stat-item {
+    background: var(--stat-bg);
+    border-radius: 10px;
+    padding: 12px 8px;
+    text-align: center;
+    transition: background 0.2s;
+}
+
+.stat-item:hover {
+    background: var(--stat-bg-hover, rgba(255,255,255,0.08));
+}
+
+.stat-icon {
+    font-size: 18px;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.stat-icon.likes { color: #4CAF50; }
+.stat-icon.dislikes { color: #f44336; }
+.stat-icon.hours { color: #9c27b0; }
+.stat-icon.kills { color: #ff9800; }
+
+.stat-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--card-text);
+    display: block;
+}
+
+.stat-label {
+    font-size: 10px;
+    color: var(--card-text-secondary);
+    text-transform: uppercase;
+}
+
+/* ============================================
+   PASSES & EMBLEMS
+   ============================================ */
+
+.passes-section {
+    margin-bottom: 16px;
+}
+
+.passes-section h4,
+.emblems-section h4 {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--card-text-secondary);
+    margin: 0 0 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.section-icon {
+    font-size: 12px;
+}
+
+.passes-list {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.pass-tag {
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 10px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.pass-tag.premium {
+    background: rgba(255, 149, 0, 0.2);
+    color: #ff9500;
+    border: 1px solid rgba(255, 149, 0, 0.3);
+}
+
+.pass-tag.vip {
+    background: rgba(156, 39, 176, 0.2);
+    color: #ce93d8;
+    border: 1px solid rgba(156, 39, 176, 0.3);
+}
+
+.pass-tag.elite {
+    background: rgba(96, 125, 139, 0.2);
+    color: #b0bec5;
+    border: 1px solid rgba(96, 125, 139, 0.3);
+}
+
+/* Emblems */
+.emblems-section {
+    margin-bottom: 16px;
+}
+
+.emblems-list {
+    display: flex;
+    gap: 8px;
+}
+
+.emblem {
+    width: 32px;
+    height: 32px;
+    background: var(--stat-bg);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.emblem:hover {
+    background: var(--stat-bg-hover, rgba(255,255,255,0.1));
+    transform: scale(1.1);
+}

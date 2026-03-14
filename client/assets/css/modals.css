@@ -1,5 +1,23 @@
 /* Modal Styles */
 
+/* Base modal class (for simple modals without overlay structure) */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal.active {
+    display: flex;
+}
+
 .modal-overlay {
     display: none;
     position: fixed;
@@ -18,7 +36,7 @@
 }
 
 .modal-container {
-    background: linear-gradient(145deg, #1a1d29 0%, #0f1119 100%);
+    background: var(--card-bg);
     border-radius: 6px;
     width: 90%;
     max-width: 500px;
@@ -26,7 +44,7 @@
     overflow: hidden;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
     animation: modalSlideIn 0.2s ease;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-color);
 }
 
 @keyframes modalSlideIn {
@@ -42,8 +60,8 @@
 
 .modal-header {
     padding: 15px 20px;
-    background: rgba(0, 0, 0, 0.3);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--modal-header-bg);
+    border-bottom: 1px solid var(--modal-header-border);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -53,7 +71,7 @@
     margin: 0;
     font-size: 18px;
     font-weight: 700;
-    color: #fff;
+    color: var(--card-text);
     font-family: 'Ubuntu', sans-serif;
 }
 
@@ -61,7 +79,7 @@
     background: none;
     border: none;
     font-size: 24px;
-    color: #9ca3af;
+    color: var(--card-text-secondary);
     cursor: pointer;
     padding: 0;
     width: 30px;
@@ -74,8 +92,8 @@
 }
 
 .modal-close:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: #fff;
+    background: var(--stat-bg-hover);
+    color: var(--card-text);
 }
 
 .modal-body {
@@ -84,36 +102,36 @@
     max-height: calc(80vh - 120px);
 }
 
-/* Scrollbar preto para o modal */
+/* Scrollbar para o modal */
 .modal-body::-webkit-scrollbar {
     width: 8px;
 }
 
 .modal-body::-webkit-scrollbar-track {
-    background: #0f1119;
+    background: var(--modal-scrollbar-track);
     border-radius: 4px;
 }
 
 .modal-body::-webkit-scrollbar-thumb {
-    background: #000;
+    background: var(--modal-scrollbar-thumb);
     border-radius: 4px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-color);
 }
 
 .modal-body::-webkit-scrollbar-thumb:hover {
-    background: #1a1a1a;
+    background: var(--modal-scrollbar-thumb-hover);
 }
 
 /* Firefox */
 .modal-body {
     scrollbar-width: thin;
-    scrollbar-color: #000 #0f1119;
+    scrollbar-color: var(--modal-scrollbar-thumb) var(--modal-scrollbar-track);
 }
 
 .modal-footer {
     padding: 15px 20px;
-    background: rgba(0, 0, 0, 0.3);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--modal-header-bg);
+    border-top: 1px solid var(--modal-header-border);
     display: flex;
     justify-content: flex-end;
     gap: 10px;
@@ -142,7 +160,7 @@
 
 .modal-btn-secondary {
     background: rgba(255, 255, 255, 0.1);
-    color: #fff;
+    color: var(--card-text);
 }
 
 .modal-btn-secondary:hover {
@@ -227,14 +245,14 @@
     gap: 15px;
     margin-bottom: 20px;
     padding-bottom: 15px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--border-color);
 }
 
-.clan-avatar {
+.clan-icon {
     width: 60px;
     height: 60px;
-    background: linear-gradient(135deg, #ff8c00 0%, #ff6b00 100%);
     border-radius: 12px;
+    background: linear-gradient(135deg, var(--clan-icon-color-1) 0%, var(--clan-icon-color-2) 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -244,7 +262,7 @@
 
 .clan-details h3 {
     font-size: 18px;
-    color: #fff;
+    color: var(--card-text);
     margin: 0 0 5px 0;
 }
 
@@ -293,7 +311,7 @@
 
 .clan-tab:hover {
     background: rgba(255, 255, 255, 0.1);
-    color: #fff;
+    color: var(--card-text);
 }
 
 .clan-tab.active {
@@ -769,7 +787,7 @@
 
 /* Leaderboard Modal Styles - Podium Style */
 .leaderboard-modal-content {
-    max-width: 380px;
+    max-width: 520px;
     background: var(--card-bg);
     border-radius: 20px;
     border: none;
@@ -987,3 +1005,286 @@
 .leaderboard-footer i {
     color: #00d4ff;
 }
+
+/* ============================================
+   CASE OPENING MODAL - From index.css
+   ============================================ */
+
+#case-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+}
+
+#case-modal.active {
+    display: flex;
+}
+
+.case-modal-content {
+    background: var(--card-bg, #1a1a2e);
+    border-radius: 16px;
+    width: 700px;
+    max-width: 90%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+    animation: modalSlideIn 0.3s ease;
+}
+
+.case-body {
+    padding: 30px;
+}
+
+/* Roulette Section */
+.roulette-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.roulette-container {
+    position: relative;
+    width: 100%;
+    height: 140px;
+    background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.3) 100%);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid var(--border-color);
+}
+
+.selector-arrow {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-top: 20px solid #ffd700;
+    z-index: 10;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+}
+
+.roulette-wrapper {
+    display: flex;
+    gap: 10px;
+    padding: 20px 10px;
+    height: 100%;
+    align-items: center;
+    min-width: fit-content;
+    will-change: transform;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Skin Cards */
+.skin-card {
+    min-width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+    border-radius: 10px;
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    border: 2px solid;
+    flex-shrink: 0;
+    transition: transform 0.2s;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative;
+}
+
+.skin-card i {
+    font-size: 28px;
+    margin-bottom: 2px;
+}
+
+.skin-name {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--card-text);
+    text-align: center;
+    padding: 0 5px;
+    max-width: 90px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.skin-weapon {
+    font-size: 8px;
+    color: var(--card-text-secondary);
+    text-transform: uppercase;
+}
+
+/* Skin Rarities */
+.skin-card.consumer {
+    border-color: #b0c3d9;
+    background: linear-gradient(135deg, rgba(176, 195, 217, 0.15) 0%, rgba(176, 195, 217, 0.05) 100%);
+}
+
+.skin-card.industrial {
+    border-color: #5e98d9;
+    background: linear-gradient(135deg, rgba(94, 152, 217, 0.15) 0%, rgba(94, 152, 217, 0.05) 100%);
+}
+
+.skin-card.milspec {
+    border-color: #4b69ff;
+    background: linear-gradient(135deg, rgba(75, 105, 255, 0.15) 0%, rgba(75, 105, 255, 0.05) 100%);
+}
+
+.skin-card.restricted {
+    border-color: #8847ff;
+    background: linear-gradient(135deg, rgba(136, 71, 255, 0.15) 0%, rgba(136, 71, 255, 0.05) 100%);
+}
+
+.skin-card.classified {
+    border-color: #d32ce6;
+    background: linear-gradient(135deg, rgba(211, 44, 230, 0.15) 0%, rgba(211, 44, 230, 0.05) 100%);
+}
+
+.skin-card.covert {
+    border-color: #eb4b4b;
+    background: linear-gradient(135deg, rgba(235, 75, 75, 0.15) 0%, rgba(235, 75, 75, 0.05) 100%);
+}
+
+/* Open Button */
+.open-btn {
+    width: 200px;
+    padding: 15px 24px;
+    font-size: 16px;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Ubuntu', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    background: linear-gradient(135deg, #ffd700 0%, #ffa000 100%);
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.open-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 160, 0, 0.5);
+}
+
+.open-btn:disabled {
+    background: linear-gradient(135deg, #666 0%, #444 100%);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* ============================================
+   SHOP MODAL - From index.css
+   ============================================ */
+
+#shop-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+}
+
+#shop-modal.active {
+    display: flex;
+}
+
+.shop-modal-content {
+    background: var(--card-bg, #fff);
+    border-radius: 16px;
+    width: 490px;
+    max-width: 90%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    animation: modalSlideIn 0.3s ease;
+}
+
+/* ============================================
+   SETTINGS MODAL - From index.css
+   ============================================ */
+
+#settings-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+}
+
+#settings-modal.active {
+    display: flex;
+}
+
+.settings-modal-content {
+    background: var(--card-bg, #fff);
+    border-radius: 16px;
+    width: 320px;
+    max-width: 90%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    animation: modalSlideIn 0.3s ease;
+}
+
+.settings-modal-content .modal-header h2 i {
+    color: #00d4ff;
+}
+
+.settings-body {
+    padding: 20px 25px;
+}
+
+.settings-body label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--settings-text, #666);
+    font-size: 14px;
+    cursor: pointer;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-color, #eee);
+    font-family: 'Ubuntu', sans-serif;
+    transition: color 0.15s;
+}
+
+.settings-body label:last-of-type {
+    border-bottom: none;
+}
+
+.settings-body label:hover {
+    color: var(--card-text, #333);
+}
+
+.settings-body input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: #00d4ff;
+    flex-shrink: 0;
+}
+

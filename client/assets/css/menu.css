@@ -264,10 +264,10 @@ body {
     transform: translateX(-50%);
     width: 300px;
     padding: 8px 12px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid var(--border-color);
     border-radius: 4px;
-    background: rgba(0, 0, 0, 0.6);
-    color: #fff;
+    background: var(--input-bg);
+    color: var(--input-text);
     font-family: 'Ubuntu', sans-serif;
     font-size: 14px;
     display: none;
@@ -275,7 +275,7 @@ body {
 }
 
 #chat_textbox::placeholder {
-    color: #aaa;
+    color: var(--tab-inactive);
 }
 
 /* Connecting Screen */

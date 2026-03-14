@@ -48,11 +48,6 @@ function handleLogin() {
     
     isLoggedIn = true;
     updateProfileCard();
-    
-    // Mostrar mensagem de sucesso
-    if (typeof openMessageModal === 'function') {
-        openMessageModal('Login Realizado!', 'Bem-vindo de volta, ' + username + '!', 'info');
-    }
 }
 
 // Handle Register (simulated - works even with empty fields)
@@ -163,6 +158,21 @@ function showInvTab(tabName, btnElement) {
     }
 }
 
+// Inventory Modal Functions
+function openInventoryModal() {
+    const modal = document.getElementById('inventory-modal');
+    if (modal) {
+        modal.classList.add('active');
+    }
+}
+
+function closeInventoryModal() {
+    const modal = document.getElementById('inventory-modal');
+    if (modal) {
+        modal.classList.remove('active');
+    }
+}
+
 // Settings Modal Functions
 function openSettingsModal() {
     const modal = document.getElementById('settings-modal');
@@ -194,10 +204,110 @@ function closeShopModal() {
 }
 
 // Case Modal Functions
-function openCaseModal() {
+function openCasesModal() {
     const modal = document.getElementById('case-modal');
     if (modal) {
         modal.classList.add('active');
+        // Delay maior para garantir que o modal esteja completamente renderizado
+        setTimeout(function() {
+            console.log('=== DEBUG ROULETTE ===');
+            const roulette = document.getElementById('roulette');
+            console.log('Roulette element:', roulette);
+            if (roulette) {
+                console.log('Roulette innerHTML length:', roulette.innerHTML.length);
+                console.log('Roulette children count:', roulette.children.length);
+                console.log('Roulette display:', roulette.style.display);
+                console.log('Roulette transform:', roulette.style.transform);
+            }
+            regenerateRouletteIfNeeded();
+            resetRoulette();
+            console.log('=====================');
+        }, 100);
+    }
+}
+
+function openCaseWithName(caseName) {
+    const modal = document.getElementById('case-modal');
+    const titleElement = document.getElementById('case-modal-title');
+    if (modal) {
+        if (titleElement) {
+            titleElement.textContent = caseName;
+        }
+        modal.classList.add('active');
+        // Delay maior para garantir que o modal esteja completamente renderizado
+        setTimeout(function() {
+            console.log('=== DEBUG ROULETTE (openCaseWithName) ===');
+            const roulette = document.getElementById('roulette');
+            console.log('Roulette element:', roulette);
+            if (roulette) {
+                console.log('Roulette innerHTML length:', roulette.innerHTML.length);
+                console.log('Roulette children count:', roulette.children.length);
+                console.log('Roulette display:', roulette.style.display);
+                console.log('Roulette transform:', roulette.style.transform);
+            }
+            regenerateRouletteIfNeeded();
+            resetRoulette();
+            console.log('=====================');
+        }, 100);
+    }
+}
+
+// Função auxiliar para regenerar a roleta - agora sempre recria os cards
+function regenerateRouletteIfNeeded() {
+    const roulette = document.getElementById('roulette');
+    if (roulette) {
+        // SEMPRE regenerar a roleta ao abrir o modal para garantir que está correta
+        console.log('Regenerando roleta...');
+        // Restaurar HTML original com os 18 cards padrão
+        roulette.innerHTML = `
+            <div class="skin-card consumer"><i class="fas fa-crosshairs" style="color: #b0c3d9"></i><span class="skin-name">Marble Platinum</span><span class="skin-weapon">P90</span></div>
+            <div class="skin-card consumer"><i class="fas fa-crosshairs" style="color: #b0c3d9"></i><span class="skin-name">Blood Club</span><span class="skin-weapon">Sawed-Off</span></div>
+            <div class="skin-card industrial"><i class="fas fa-crosshairs" style="color: #5e98d9"></i><span class="skin-name">Ice Bronze</span><span class="skin-weapon">Negev</span></div>
+            <div class="skin-card consumer"><i class="fas fa-khanda" style="color: #b0c3d9"></i><span class="skin-name">Asiimov Warrior</span><span class="skin-weapon">Karambit</span></div>
+            <div class="skin-card industrial"><i class="fas fa-crosshairs" style="color: #5e98d9"></i><span class="skin-name">Shadow Splash</span><span class="skin-weapon">MAG-7</span></div>
+            <div class="skin-card consumer"><i class="fas fa-crosshairs" style="color: #b0c3d9"></i><span class="skin-name">Fade Check</span><span class="skin-weapon">PP-Bizon</span></div>
+            <div class="skin-card consumer"><i class="fas fa-crosshairs" style="color: #b0c3d9"></i><span class="skin-name">Snake Wing</span><span class="skin-weapon">M4A1-S</span></div>
+            <div class="skin-card industrial"><i class="fas fa-crosshairs" style="color: #5e98d9"></i><span class="skin-name">Moon King</span><span class="skin-weapon">P250</span></div>
+            <div class="skin-card consumer"><i class="fas fa-crosshairs" style="color: #b0c3d9"></i><span class="skin-name">Electric Joker</span><span class="skin-weapon">AK-47</span></div>
+            <div class="skin-card consumer"><i class="fas fa-crosshairs" style="color: #b0c3d9"></i><span class="skin-name">Sand Gold</span><span class="skin-weapon">USP-S</span></div>
+            <div class="skin-card milspec"><i class="fas fa-crosshairs" style="color: #4b69ff"></i><span class="skin-name">Rust Warrior</span><span class="skin-weapon">Negev</span></div>
+            <div class="skin-card restricted"><i class="fas fa-khanda" style="color: #8847ff"></i><span class="skin-name">Dragon Lore</span><span class="skin-weapon">AWP</span></div>
+            <div class="skin-card consumer"><i class="fas fa-crosshairs" style="color: #b0c3d9"></i><span class="skin-name">Hyper Beast</span><span class="skin-weapon">UMP-45</span></div>
+            <div class="skin-card classified"><i class="fas fa-hand-paper" style="color: #d32ce6"></i><span class="skin-name">Crimson Web</span><span class="skin-weapon">Gloves</span></div>
+            <div class="skin-card consumer"><i class="fas fa-crosshairs" style="color: #b0c3d9"></i><span class="skin-name">Vulcan Gold</span><span class="skin-weapon">P90</span></div>
+            <div class="skin-card covert"><i class="fas fa-khanda" style="color: #eb4b4b"></i><span class="skin-name">Fade Knife</span><span class="skin-weapon">Knife</span></div>
+            <div class="skin-card consumer"><i class="fas fa-crosshairs" style="color: #b0c3d9"></i><span class="skin-name">Ice Joker</span><span class="skin-weapon">FAMAS</span></div>
+            <div class="skin-card industrial"><i class="fas fa-crosshairs" style="color: #5e98d9"></i><span class="skin-name">Moon Queen</span><span class="skin-weapon">UMP-45</span></div>
+        `;
+        console.log('Roulette regenerada com', roulette.querySelectorAll('.skin-card').length, 'cards');
+    }
+}
+
+// Função para resetar a roleta ao estado inicial
+function resetRoulette() {
+    const roulette = document.getElementById('roulette');
+    if (roulette) {
+        // Forçar visibilidade dos itens
+        roulette.style.display = 'flex';
+        roulette.style.visibility = 'visible';
+        roulette.style.opacity = '1';
+        roulette.style.transform = 'translateX(0px)';
+        roulette.style.transition = 'none';
+        
+        // Verificar se há itens na roleta
+        const items = roulette.querySelectorAll('.skin-card');
+        console.log('Itens na roleta:', items.length);
+        
+        // Garantir que todos os itens estejam visíveis
+        items.forEach((item, index) => {
+            item.style.display = 'flex';
+            item.style.visibility = 'visible';
+            item.style.opacity = '1';
+        });
+        
+        console.log('Roulette resetada, transform:', roulette.style.transform);
+    } else {
+        console.error('Elemento roulette não encontrado!');
     }
 }
 
@@ -390,4 +500,49 @@ document.addEventListener('keydown', function(e) {
 // Initialize profile card on page load
 document.addEventListener('DOMContentLoaded', function() {
     updateProfileCard();
+    
+    // DEBUG: Verificar se modais estão no DOM
+    console.log('=== DEBUG MODAIS ===');
+    const modals = [
+        'shop-modal', 'case-modal', 'settings-modal', 
+        'battlepass-modal', 'leaderboard-modal', 'skinsModal',
+        'clanModal', 'updatesModal', 'messageModal'
+    ];
+    
+    modals.forEach(function(id) {
+        const el = document.getElementById(id);
+        console.log(id + ':', el ? 'ENCONTRADO ✓' : 'NÃO ENCONTRADO ✗');
+    });
+    console.log('====================');
+    
+    // Se modais não foram carregados (PHP não está funcionando), carregar via JS
+    setTimeout(function() {
+        if (!document.getElementById('shop-modal')) {
+            console.log('Modais não encontrados. Carregando via JavaScript...');
+            loadModalsDynamically();
+        }
+    }, 500);
 });
+
+// Função para carregar modais dinamicamente se PHP falhar
+function loadModalsDynamically() {
+    const modalsToLoad = [
+        'settings.html', 'shop.html', 'cases.html', 
+        'battlepass.html', 'leaderboard.html', 'skins.html',
+        'message.html', 'clan.html', 'updates.html'
+    ];
+    
+    const basePath = 'include/modals/';
+    
+    modalsToLoad.forEach(function(file) {
+        fetch(basePath + file)
+            .then(response => response.text())
+            .then(html => {
+                const temp = document.createElement('div');
+                temp.innerHTML = html;
+                document.body.appendChild(temp.firstElementChild);
+                console.log('Carregado: ' + file);
+            })
+            .catch(err => console.error('Erro ao carregar ' + file + ':', err));
+    });
+}

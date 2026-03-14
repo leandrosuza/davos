@@ -946,7 +946,8 @@
         ctx.restore();
         
         // Draw HUD elements com fade suave quando menu aberto
-        if (hudFadeAlpha > 0.01) {
+        // Não desenhar quando jogador está morto (sem células) - mesmo comportamento do lobby
+        if (hudFadeAlpha > 0.01 && playerCells.length > 0) {
             ctx.save();
             ctx.globalAlpha = hudFadeAlpha;
             
@@ -1538,6 +1539,23 @@
         
         if (!roulette || !openBtn) return;
         
+        // Verificar se há cards na roleta - se não houver, regenerar primeiro
+        if (roulette.children.length === 0) {
+            console.log('Roulette vazia - regenerando cards antes do spin');
+            // Chamar generateRoulette ou regenerar diretamente
+            var skins = [];
+            for (var i = 0; i < 50; i++) {
+                skins.push(generateRandomSkin());
+            }
+            roulette.innerHTML = skins.map(function(skin) {
+                return '<div class="skin-card ' + skin.rarity + '">' +
+                    '<i class="fas ' + skin.icon + '" style="color: ' + skin.rarityColor + '"></i>' +
+                    '<span class="skin-name">' + skin.name + '</span>' +
+                    '<span class="skin-weapon">' + skin.weapon + '</span>' +
+                '</div>';
+            }).join('');
+        }
+        
         isSpinning = true;
         openBtn.disabled = true;
         openBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> OPENING...';
@@ -1551,6 +1569,18 @@
         
         // Take first 45 cards
         var allCards = Array.from(roulette.children).slice(0, 45);
+        
+        // Se ainda não houver cards suficientes, criar alguns genéricos
+        while (allCards.length < 45) {
+            var genericSkin = generateRandomSkin();
+            var genericCard = document.createElement('div');
+            genericCard.className = 'skin-card ' + genericSkin.rarity;
+            genericCard.innerHTML = 
+                '<i class="fas ' + genericSkin.icon + '" style="color: ' + genericSkin.rarityColor + '"></i>' +
+                '<span class="skin-name">' + genericSkin.name + '</span>' +
+                '<span class="skin-weapon">' + genericSkin.weapon + '</span>';
+            allCards.push(genericCard);
+        }
         
         // Create winning card
         var winningCard = document.createElement('div');

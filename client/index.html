@@ -15,8 +15,13 @@
     <link id="favicon" rel="icon" type="image/png" href="assets/img/favicon.png" />
     <link href="https://fonts.googleapis.com/css?family=Ubuntu:700" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="assets/css/index.css" rel="stylesheet">
+    <link href="assets/css/base.css" rel="stylesheet">
+    <link href="assets/css/layout.css" rel="stylesheet">
+    <link href="assets/css/layout-cards.css" rel="stylesheet">
+    <link href="assets/css/cards.css" rel="stylesheet">
     <link href="assets/css/modals.css" rel="stylesheet">
+    <link href="assets/css/chat.css" rel="stylesheet">
+    <link href="assets/css/responsive.css" rel="stylesheet">
     
     <style>
         /* Sobrescrever TODOS os estilos padrão do navegador */
@@ -336,36 +341,33 @@
                                 <i class="fas fa-plus"></i>
                             </div>
                         </div>
-                        <button class="inventory-btn" onclick="openInventoryModal()">
-                            <i class="fas fa-box-open"></i> Open Inventory
-                        </button>
                     </div>
                     
                     <!-- Tab Cases -->
                     <div id="inv-tab-cases" class="inv-tab-content">
                         <div class="cases-grid">
-                            <div class="case-item common">
+                            <div class="case-item common" onclick="openCaseWithName('Common Case')">
                                 <div class="case-icon">
                                     <i class="fas fa-cube"></i>
                                 </div>
                                 <span class="case-name">Common Case</span>
                                 <span class="case-count">x3</span>
                             </div>
-                            <div class="case-item rare">
+                            <div class="case-item rare" onclick="openCaseWithName('Rare Case')">
                                 <div class="case-icon">
                                     <i class="fas fa-cube"></i>
                                 </div>
                                 <span class="case-name">Rare Case</span>
                                 <span class="case-count">x1</span>
                             </div>
-                            <div class="case-item epic">
+                            <div class="case-item epic" onclick="openCaseWithName('Epic Case')">
                                 <div class="case-icon">
                                     <i class="fas fa-cube"></i>
                                 </div>
                                 <span class="case-name">Epic Case</span>
                                 <span class="case-count">x0</span>
                             </div>
-                            <div class="case-item legendary">
+                            <div class="case-item legendary" onclick="openCaseWithName('Legendary Case')">
                                 <div class="case-icon">
                                     <i class="fas fa-cube"></i>
                                 </div>
@@ -374,7 +376,7 @@
                             </div>
                         </div>
                         <button class="inventory-btn cases-btn" onclick="openCasesModal()">
-                            <i class="fas fa-key"></i> Open Cases
+                            <i class="fas fa-th"></i> View More Cases
                         </button>
                     </div>
                 </div>
@@ -488,351 +490,12 @@
     <!-- Chat Hint -->
     <div id="chat-hint">Pressione Q para chat</div>
 
-    <!-- Settings Modal -->
-    <div id="settings-modal" class="modal">
-        <div class="modal-content settings-modal-content">
-            <div class="modal-header">
-                <h2><i class="fas fa-cog"></i> Settings</h2>
-                <button class="modal-close" onclick="closeSettingsModal()">&times;</button>
-            </div>
-            <div class="modal-body settings-body">
-                <label>
-                    <input type="checkbox" class="save" data-box-id="1" onchange="setSkins(!$(this).is(':checked'));">
-                    No skins
-                </label>
-                <label>
-                    <input type="checkbox" class="save" data-box-id="2" onchange="setNames(!$(this).is(':checked'));">
-                    No names
-                </label>
-                <label>
-                    <input type="checkbox" class="save" data-box-id="3" onchange="setDarkTheme($(this).is(':checked'));">
-                    Dark Theme
-                </label>
-                <label>
-                    <input type="checkbox" class="save" data-box-id="4" onchange="setColors($(this).is(':checked'));">
-                    No colors
-                </label>
-                <label>
-                    <input type="checkbox" class="save" data-box-id="5" onchange="setShowMass($(this).is(':checked'));">
-                    Show mass
-                </label>
-                <label>
-                    <input type="checkbox" class="save" data-box-id="6" onchange="setSmooth($(this).is(':checked'));">
-                    Smooth Render
-                </label>
-                <label>
-                    <input type="checkbox" class="save" data-box-id="7" onchange="setChatHide($(this).is(':checked'));">
-                    Hide Chat
-                </label>
-            </div>
-        </div>
-    </div>
-
-    <!-- Shop Modal -->
-    <div id="shop-modal" class="modal">
-        <div class="modal-content shop-modal-content">
-            <div class="modal-header">
-                <h2><i class="fas fa-shopping-cart"></i> Shop</h2>
-                <button class="modal-close" onclick="closeShopModal()">&times;</button>
-            </div>
-            <div class="modal-body shop-body">
-                <div class="shop-currency">
-                    <span class="currency-icon"><i class="fas fa-coins"></i></span>
-                    <span class="currency-amount">1,250</span>
-                    <span class="currency-label">Coins</span>
-                </div>
-                <div class="shop-tabs">
-                    <button class="shop-tab active" onclick="switchShopTab('skins')">Skins</button>
-                    <button class="shop-tab" onclick="switchShopTab('boosts')">Boosts</button>
-                    <button class="shop-tab" onclick="switchShopTab('pass')">Davos Pass</button>
-                </div>
-                <div class="shop-grid" id="shop-skins">
-                    <div class="shop-item">
-                        <div class="item-icon"><i class="fas fa-crosshairs" style="color: #ff4b4b;"></i></div>
-                        <div class="item-name">Dragon Skin</div>
-                        <div class="item-price"><i class="fas fa-coins"></i> 500</div>
-                        <button class="buy-btn" onclick="buyItem('dragon', 500)">Buy</button>
-                    </div>
-                    <div class="shop-item">
-                        <div class="item-icon"><i class="fas fa-khanda" style="color: #8847ff;"></i></div>
-                        <div class="item-name">Karambit Gold</div>
-                        <div class="item-price"><i class="fas fa-coins"></i> 800</div>
-                        <button class="buy-btn" onclick="buyItem('karambit', 800)">Buy</button>
-                    </div>
-                    <div class="shop-item">
-                        <div class="item-icon"><i class="fas fa-hand-paper" style="color: #d32ce6;"></i></div>
-                        <div class="item-name">Elite Gloves</div>
-                        <div class="item-price"><i class="fas fa-coins"></i> 350</div>
-                        <button class="buy-btn" onclick="buyItem('gloves', 350)">Buy</button>
-                    </div>
-                    <div class="shop-item">
-                        <div class="item-icon"><i class="fas fa-fire" style="color: #ff6600;"></i></div>
-                        <div class="item-name">Fire Effect</div>
-                        <div class="item-price"><i class="fas fa-coins"></i> 600</div>
-                        <button class="buy-btn" onclick="buyItem('fire', 600)">Buy</button>
-                    </div>
-                    <div class="shop-item">
-                        <div class="item-icon"><i class="fas fa-crown" style="color: #ffd700;"></i></div>
-                        <div class="item-name">Crown Skin</div>
-                        <div class="item-price"><i class="fas fa-coins"></i> 1,000</div>
-                        <button class="buy-btn" onclick="buyItem('crown', 1000)">Buy</button>
-                    </div>
-                    <div class="shop-item">
-                        <div class="item-icon"><i class="fas fa-ghost" style="color: #4b69ff;"></i></div>
-                        <div class="item-name">Ghost Mode</div>
-                        <div class="item-price"><i class="fas fa-coins"></i> 750</div>
-                        <button class="buy-btn" onclick="buyItem('ghost', 750)">Buy</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Case Opening Modal -->
-    <div id="case-modal" class="modal">
-        <div class="modal-content case-modal-content">
-            <div class="modal-header">
-                <h2><i class="fas fa-cube"></i> Open Case</h2>
-                <button class="modal-close" onclick="closeCaseModal()">&times;</button>
-            </div>
-            <div class="modal-body case-body">
-                <section class="roulette-section">
-                    <div class="roulette-container">
-                        <div class="selector-arrow"></div>
-                        <div class="roulette-wrapper" id="roulette" style="transition: none; transform: translateX(0px);">
-                            <div class="skin-card consumer">
-                                <i class="fas fa-crosshairs" style="color: #b0c3d9"></i>
-                                <span class="skin-name">Marble Platinum</span>
-                                <span class="skin-weapon">P90</span>
-                            </div>
-                            <div class="skin-card consumer">
-                                <i class="fas fa-crosshairs" style="color: #b0c3d9"></i>
-                                <span class="skin-name">Blood Club</span>
-                                <span class="skin-weapon">Sawed-Off</span>
-                            </div>
-                            <div class="skin-card industrial">
-                                <i class="fas fa-crosshairs" style="color: #5e98d9"></i>
-                                <span class="skin-name">Ice Bronze</span>
-                                <span class="skin-weapon">Negev</span>
-                            </div>
-                            <div class="skin-card consumer">
-                                <i class="fas fa-khanda" style="color: #b0c3d9"></i>
-                                <span class="skin-name">Asiimov Warrior</span>
-                                <span class="skin-weapon">Karambit</span>
-                            </div>
-                            <div class="skin-card industrial">
-                                <i class="fas fa-crosshairs" style="color: #5e98d9"></i>
-                                <span class="skin-name">Shadow Splash</span>
-                                <span class="skin-weapon">MAG-7</span>
-                            </div>
-                            <div class="skin-card consumer">
-                                <i class="fas fa-crosshairs" style="color: #b0c3d9"></i>
-                                <span class="skin-name">Fade Check</span>
-                                <span class="skin-weapon">PP-Bizon</span>
-                            </div>
-                            <div class="skin-card consumer">
-                                <i class="fas fa-crosshairs" style="color: #b0c3d9"></i>
-                                <span class="skin-name">Snake Wing</span>
-                                <span class="skin-weapon">M4A1-S</span>
-                            </div>
-                            <div class="skin-card industrial">
-                                <i class="fas fa-crosshairs" style="color: #5e98d9"></i>
-                                <span class="skin-name">Moon King</span>
-                                <span class="skin-weapon">P250</span>
-                            </div>
-                            <div class="skin-card consumer">
-                                <i class="fas fa-crosshairs" style="color: #b0c3d9"></i>
-                                <span class="skin-name">Electric Joker</span>
-                                <span class="skin-weapon">AK-47</span>
-                            </div>
-                            <div class="skin-card consumer">
-                                <i class="fas fa-crosshairs" style="color: #b0c3d9"></i>
-                                <span class="skin-name">Sand Gold</span>
-                                <span class="skin-weapon">USP-S</span>
-                            </div>
-                            <div class="skin-card milspec">
-                                <i class="fas fa-crosshairs" style="color: #4b69ff"></i>
-                                <span class="skin-name">Rust Warrior</span>
-                                <span class="skin-weapon">Negev</span>
-                            </div>
-                            <div class="skin-card restricted">
-                                <i class="fas fa-khanda" style="color: #8847ff"></i>
-                                <span class="skin-name">Dragon Lore</span>
-                                <span class="skin-weapon">AWP</span>
-                            </div>
-                            <div class="skin-card consumer">
-                                <i class="fas fa-crosshairs" style="color: #b0c3d9"></i>
-                                <span class="skin-name">Hyper Beast</span>
-                                <span class="skin-weapon">UMP-45</span>
-                            </div>
-                            <div class="skin-card classified">
-                                <i class="fas fa-hand-paper" style="color: #d32ce6"></i>
-                                <span class="skin-name">Crimson Web</span>
-                                <span class="skin-weapon">Gloves</span>
-                            </div>
-                            <div class="skin-card consumer">
-                                <i class="fas fa-crosshairs" style="color: #b0c3d9"></i>
-                                <span class="skin-name">Vulcan Gold</span>
-                                <span class="skin-weapon">P90</span>
-                            </div>
-                            <div class="skin-card covert">
-                                <i class="fas fa-khanda" style="color: #eb4b4b"></i>
-                                <span class="skin-name">Fade Knife</span>
-                                <span class="skin-weapon">Knife</span>
-                            </div>
-                            <div class="skin-card consumer">
-                                <i class="fas fa-crosshairs" style="color: #b0c3d9"></i>
-                                <span class="skin-name">Ice Joker</span>
-                                <span class="skin-weapon">FAMAS</span>
-                            </div>
-                            <div class="skin-card industrial">
-                                <i class="fas fa-crosshairs" style="color: #5e98d9"></i>
-                                <span class="skin-name">Moon Queen</span>
-                                <span class="skin-weapon">UMP-45</span>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="open-btn" id="openBtn" onclick="spinRoulette()"><i class="fas fa-key"></i> OPEN CASE</button>
-                </section>
-            </div>
-        </div>
-    </div>
-
-    <!-- Battle Pass Modal -->
-    <div id="battlepass-modal" class="modal">
-        <div class="modal-content battlepass-modal-content">
-            <div class="modal-header">
-                <h2><i class="fas fa-crown"></i> Battle Pass</h2>
-                <button class="modal-close" onclick="closeBattlePassModal()">&times;</button>
-            </div>
-            <div class="modal-body battlepass-body">
-                <div class="mockup-content">
-                    <div class="mockup-icon">
-                        <i class="fas fa-crown"></i>
-                    </div>
-                    <h3>Temporada 1</h3>
-                    <p>Desbloqueie recompensas exclusivas subindo de nível no Battle Pass!</p>
-                    <div class="bp-preview">
-                        <div class="bp-level-preview">
-                            <span class="current-level">Nível 12</span>
-                            <div class="xp-bar-preview">
-                                <div class="xp-fill-preview" style="width: 65%"></div>
-                            </div>
-                            <span class="xp-text-preview">6.500 / 10.000 XP</span>
-                        </div>
-                        <div class="bp-rewards-preview">
-                            <div class="reward-preview locked">
-                                <i class="fas fa-lock"></i>
-                                <span>Lvl 13</span>
-                            </div>
-                            <div class="reward-preview locked">
-                                <i class="fas fa-lock"></i>
-                                <span>Lvl 14</span>
-                            </div>
-                            <div class="reward-preview premium">
-                                <i class="fas fa-gem"></i>
-                                <span>Lvl 15</span>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="mockup-btn" onclick="closeBattlePassModal()">
-                        <i class="fas fa-crown"></i> Em breve
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Leaderboard Modal -->
-    <div id="leaderboard-modal" class="modal">
-        <div class="modal-content leaderboard-modal-content">
-            <div class="modal-header">
-                <h2><i class="fas fa-trophy"></i> Leaderboard</h2>
-                <button class="modal-close" onclick="closeLeaderboardModal()">&times;</button>
-            </div>
-            <div class="modal-body leaderboard-body">
-                <!-- Top 3 Podium -->
-                <div class="leaderboard-podium">
-                    <div class="podium-item second-place">
-                        <div class="podium-avatar">
-                            <span class="podium-rank">2</span>
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <span class="podium-name">CellMaster</span>
-                        <span class="podium-score">22.1K</span>
-                    </div>
-                    <div class="podium-item first-place">
-                        <div class="podium-avatar">
-                            <span class="podium-rank">1</span>
-                            <i class="fas fa-crown"></i>
-                        </div>
-                        <span class="podium-name">ProGamer123</span>
-                        <span class="podium-score">25.4K</span>
-                    </div>
-                    <div class="podium-item third-place">
-                        <div class="podium-avatar">
-                            <span class="podium-rank">3</span>
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <span class="podium-name">AgarioKing</span>
-                        <span class="podium-score">19.8K</span>
-                    </div>
-                </div>
-                
-                <!-- Rest of the list -->
-                <div class="leaderboard-list-below">
-                    <div class="lb-row">
-                        <span class="lb-rank">4</span>
-                        <div class="lb-avatar"><i class="fas fa-user"></i></div>
-                        <span class="lb-name">DavosPlayer</span>
-                        <span class="lb-score">15.2K</span>
-                    </div>
-                    <div class="lb-row">
-                        <span class="lb-rank">5</span>
-                        <div class="lb-avatar"><i class="fas fa-user"></i></div>
-                        <span class="lb-name">Jogador 5</span>
-                        <span class="lb-score">12.5K</span>
-                    </div>
-                    <div class="lb-row">
-                        <span class="lb-rank">6</span>
-                        <div class="lb-avatar"><i class="fas fa-user"></i></div>
-                        <span class="lb-name">CellHunter</span>
-                        <span class="lb-score">10.3K</span>
-                    </div>
-                    <div class="lb-row">
-                        <span class="lb-rank">7</span>
-                        <div class="lb-avatar"><i class="fas fa-user"></i></div>
-                        <span class="lb-name">BlobMaster</span>
-                        <span class="lb-score">8.7K</span>
-                    </div>
-                    <div class="lb-row">
-                        <span class="lb-rank">8</span>
-                        <div class="lb-avatar"><i class="fas fa-user"></i></div>
-                        <span class="lb-name">VirusKiller</span>
-                        <span class="lb-score">7.2K</span>
-                    </div>
-                    <div class="lb-row">
-                        <span class="lb-rank">9</span>
-                        <div class="lb-avatar"><i class="fas fa-user"></i></div>
-                        <span class="lb-name">MassEater</span>
-                        <span class="lb-score">6.1K</span>
-                    </div>
-                    <div class="lb-row">
-                        <span class="lb-rank">10</span>
-                        <div class="lb-avatar"><i class="fas fa-user"></i></div>
-                        <span class="lb-name">SpeedyCell</span>
-                        <span class="lb-score">5.4K</span>
-                    </div>
-                </div>
-                
-                <div class="leaderboard-footer">
-                    <p><i class="fas fa-sync-alt"></i> Atualizado a cada 5 minutos</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Modals -->
+    <?php include 'include/modals/settings.html'; ?>
+    <?php include 'include/modals/shop.html'; ?>
+    <?php include 'include/modals/cases.html'; ?>
+    <?php include 'include/modals/battlepass.html'; ?>
+    <?php include 'include/modals/leaderboard.html'; ?>
     <?php include 'include/modals/skins.html'; ?>
     <?php include 'include/modals/message.html'; ?>
     <?php include 'include/modals/clan.html'; ?>
