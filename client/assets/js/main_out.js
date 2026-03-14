@@ -311,6 +311,10 @@
     function hideOverlays() {
         hasOverlay = false;
         wjQuery("#overlays").hide();
+        // Reiniciar loop de animação quando menu é fechado
+        if (wHandle.requestAnimationFrame) {
+            wHandle.requestAnimationFrame(redrawGameScene);
+        }
         // O chat não é mais mostrado automaticamente - é um modal controlado pela tecla Q
     }
 
@@ -814,6 +818,13 @@
     }
 
     function redrawGameScene() {
+        // Pausar renderização apenas quando no lobby (sem células) e menu aberto
+        // Durante partida (com células), continuar animação mesmo com menu aberto
+        if (hasOverlay && playerCells.length === 0) {
+            // Apenas desenhar uma vez o estado atual sem continuar o loop
+            drawGameScene();
+            return;
+        }
         drawGameScene();
         wHandle.requestAnimationFrame(redrawGameScene)
     }
@@ -860,6 +871,14 @@
         var a, oldtime = Date.now();
         ++cb;
         timestamp = oldtime;
+        
+        // Fade suave do HUD (0.1 = velocidade do fade)
+        if (hasOverlay) {
+            hudFadeAlpha = Math.max(0, hudFadeAlpha - 0.1);
+        } else {
+            hudFadeAlpha = Math.min(1, hudFadeAlpha + 0.1);
+        }
+        
         if (0 < playerCells.length) {
             calcViewZoom();
             var c = a = 0;
@@ -925,9 +944,30 @@
             ctx.restore()
         }
         ctx.restore();
-        lbCanvas && lbCanvas.width && ctx.drawImage(lbCanvas, canvasWidth - lbCanvas.width - 10, 10); // draw Leader Board
-        if (chatCanvas != null) ctx.drawImage(chatCanvas, 0, canvasHeight - chatCanvas.height - 50); // draw Leader Board
-
+        
+        // Draw HUD elements com fade suave quando menu aberto
+        if (hudFadeAlpha > 0.01) {
+            ctx.save();
+            ctx.globalAlpha = hudFadeAlpha;
+            
+            lbCanvas && lbCanvas.width && ctx.drawImage(lbCanvas, canvasWidth - lbCanvas.width - 10, 10); // draw Leader Board
+            if (chatCanvas != null) ctx.drawImage(chatCanvas, 0, canvasHeight - chatCanvas.height - 50); // draw Chat
+            
+            // Draw Stats (Score, Ping, FPS) on canvas - single line white text
+            if (0 != userScore) {
+                var statsStr = 'Score: ' + ~~(userScore / 100) + ' | ' + ping + 'ms | ' + fps + ' FPS';
+                
+                var statsTextObj = new UText(18, '#FFFFFF', true, '#000000');
+                statsTextObj.setValue(statsStr);
+                var statsCanvas = statsTextObj.render();
+                
+                ctx.drawImage(statsCanvas, 15, 28);
+            }
+            
+            ctx.restore();
+        }
+        
+        // Calculate FPS and Ping (even when hidden)
         userScore = Math.max(userScore, calcUserScore());
         
         // Calculate FPS
@@ -946,16 +986,6 @@
             sendUint8(222);
         }
         
-        // Draw Stats (Score, Ping, FPS) on canvas - single line white text
-        if (0 != userScore) {
-            var statsStr = 'Score: ' + ~~(userScore / 100) + ' | ' + ping + 'ms | ' + fps + ' FPS';
-            
-            var statsTextObj = new UText(18, '#FFFFFF', true, '#000000');
-            statsTextObj.setValue(statsStr);
-            var statsCanvas = statsTextObj.render();
-            
-            ctx.drawImage(statsCanvas, 15, 28);
-        }
         drawSplitIcon(ctx);
 
         drawTouch(ctx);
@@ -1250,7 +1280,8 @@
         lastFpsUpdate = 0,
         ping = 0,
         lastPingTime = 0,
-        pingSentTime = 0;
+        pingSentTime = 0,
+        hudFadeAlpha = 1;  // Alpha para fade do HUD quando menu abre/fecha
     splitIcon.src = "assets/img/split.png";
     ejectIcon.src = "assets/img/feed.png";
     var wCanvas = document.createElement("canvas");

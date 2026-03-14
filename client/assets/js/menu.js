@@ -106,6 +106,8 @@ function handleLogout() {
 function updateProfileCard() {
     const guestState = document.getElementById('profile-guest');
     const loggedState = document.getElementById('profile-logged');
+    const inventoryCard = document.getElementById('inventory-card');
+    const battlepassCard = document.getElementById('battlepass-card');
     
     if (!guestState || !loggedState) return;
     
@@ -113,6 +115,10 @@ function updateProfileCard() {
         // Mostrar estado logado
         guestState.style.display = 'none';
         loggedState.style.display = 'block';
+        
+        // Mostrar cards de inventory e battle pass
+        if (inventoryCard) inventoryCard.classList.remove('hidden-logged-out');
+        if (battlepassCard) battlepassCard.classList.remove('hidden-logged-out');
         
         // Atualizar informações do usuário
         document.getElementById('logged-username').textContent = currentUser.username;
@@ -126,6 +132,10 @@ function updateProfileCard() {
         // Mostrar estado guest
         guestState.style.display = 'block';
         loggedState.style.display = 'none';
+        
+        // Ocultar cards de inventory e battle pass
+        if (inventoryCard) inventoryCard.classList.add('hidden-logged-out');
+        if (battlepassCard) battlepassCard.classList.add('hidden-logged-out');
     }
 }
 
@@ -302,6 +312,36 @@ function openUpdatesModal() {
 
 function closeUpdatesModal() {
     const modal = document.getElementById('updatesModal');
+    if (modal) {
+        modal.classList.remove('active');
+    }
+}
+
+// Battle Pass Modal Functions
+function openBattlePassModal() {
+    const modal = document.getElementById('battlepass-modal');
+    if (modal) {
+        modal.classList.add('active');
+    }
+}
+
+function closeBattlePassModal() {
+    const modal = document.getElementById('battlepass-modal');
+    if (modal) {
+        modal.classList.remove('active');
+    }
+}
+
+// Leaderboard Modal Functions
+function openLeaderboardModal() {
+    const modal = document.getElementById('leaderboard-modal');
+    if (modal) {
+        modal.classList.add('active');
+    }
+}
+
+function closeLeaderboardModal() {
+    const modal = document.getElementById('leaderboard-modal');
     if (modal) {
         modal.classList.remove('active');
     }
