@@ -1049,40 +1049,118 @@
                     boardLength = 60;
                 boardLength = !drawTeam ? boardLength + 24 * leaderBoard.length : boardLength + 180;
                 var scaleFactor = Math.min(0.22 * canvasHeight, Math.min(200, .3 * canvasWidth)) * 0.005;
-                lbCanvas.width = 200 * scaleFactor;
-                lbCanvas.height = boardLength * scaleFactor;
+                
+                // Tamanho do canvas com padding para borda e sombra
+                var padding = 10;
+                var shadowBlur = 15;
+                lbCanvas.width = (200 + padding * 2 + shadowBlur * 2) * scaleFactor;
+                lbCanvas.height = (boardLength + padding * 2 + shadowBlur * 2) * scaleFactor;
 
                 ctx.scale(scaleFactor, scaleFactor);
-                ctx.globalAlpha = .4;
-                ctx.fillStyle = "#000000";
-                ctx.fillRect(0, 0, 200, boardLength);
-
+                
+                // Offset para sombra e padding
+                var offsetX = padding + shadowBlur;
+                var offsetY = padding + shadowBlur;
+                var width = 200;
+                var height = boardLength;
+                var borderRadius = 10;
+                
+                // Sombra (similar ao chat: box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6))
+                ctx.save();
+                ctx.shadowColor = "rgba(0, 0, 0, 0.6)";
+                ctx.shadowBlur = 15;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 4;
+                
+                // Fundo escuro semi-transparente (similar ao chat: rgba(15, 18, 28, 0.95))
+                ctx.fillStyle = "rgba(15, 18, 28, 0.95)";
+                
+                // Desenhar retângulo com cantos arredondados
+                ctx.beginPath();
+                ctx.moveTo(offsetX + borderRadius, offsetY);
+                ctx.lineTo(offsetX + width - borderRadius, offsetY);
+                ctx.quadraticCurveTo(offsetX + width, offsetY, offsetX + width, offsetY + borderRadius);
+                ctx.lineTo(offsetX + width, offsetY + height - borderRadius);
+                ctx.quadraticCurveTo(offsetX + width, offsetY + height, offsetX + width - borderRadius, offsetY + height);
+                ctx.lineTo(offsetX + borderRadius, offsetY + height);
+                ctx.quadraticCurveTo(offsetX, offsetY + height, offsetX, offsetY + height - borderRadius);
+                ctx.lineTo(offsetX, offsetY + borderRadius);
+                ctx.quadraticCurveTo(offsetX, offsetY, offsetX + borderRadius, offsetY);
+                ctx.closePath();
+                ctx.fill();
+                ctx.restore();
+                
+                // Borda cyan (similar ao chat: 2px solid rgba(0, 200, 255, 0.6))
+                ctx.save();
+                ctx.strokeStyle = "rgba(0, 200, 255, 0.6)";
+                ctx.lineWidth = 2;
+                
+                // Desenhar borda com cantos arredondados
+                ctx.beginPath();
+                ctx.moveTo(offsetX + borderRadius, offsetY);
+                ctx.lineTo(offsetX + width - borderRadius, offsetY);
+                ctx.quadraticCurveTo(offsetX + width, offsetY, offsetX + width, offsetY + borderRadius);
+                ctx.lineTo(offsetX + width, offsetY + height - borderRadius);
+                ctx.quadraticCurveTo(offsetX + width, offsetY + height, offsetX + width - borderRadius, offsetY + height);
+                ctx.lineTo(offsetX + borderRadius, offsetY + height);
+                ctx.quadraticCurveTo(offsetX, offsetY + height, offsetX, offsetY + height - borderRadius);
+                ctx.lineTo(offsetX, offsetY + borderRadius);
+                ctx.quadraticCurveTo(offsetX, offsetY, offsetX + borderRadius, offsetY);
+                ctx.closePath();
+                ctx.stroke();
+                ctx.restore();
+                
+                // Título "Leaderboard"
                 ctx.globalAlpha = 1;
-                ctx.fillStyle = "#FFFFFF";
-                var c = "Leaderboard";
-                ctx.font = "30px Ubuntu";
-                ctx.fillText(c, 100 - ctx.measureText(c).width * 0.5, 40);
+                ctx.fillStyle = "#00d4ff"; // Cor cyan para o título
+                ctx.font = "bold 24px Ubuntu";
+                var title = "Leaderboard";
+                ctx.fillText(title, offsetX + width * 0.5 - ctx.measureText(title).width * 0.5, offsetY + 35);
+                
+                // Linha separadora sob o título
+                ctx.strokeStyle = "rgba(0, 200, 255, 0.3)";
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(offsetX + 10, offsetY + 45);
+                ctx.lineTo(offsetX + width - 10, offsetY + 45);
+                ctx.stroke();
+                
                 var b, l;
                 if (!drawTeam) {
-                    for (ctx.font = "20px Ubuntu", b = 0, l = leaderBoard.length; b < l; ++b) {
-                        c = leaderBoard[b].name || "An unnamed cell";
+                    for (ctx.font = "18px Ubuntu", b = 0, l = leaderBoard.length; b < l; ++b) {
+                        var name = leaderBoard[b].name || "An unnamed cell";
                         if (!showName) {
-                            (c = "An unnamed cell");
+                            name = "An unnamed cell";
                         }
                         var me = -1 != nodesOnScreen.indexOf(leaderBoard[b].id);
-                        if (me) playerCells[0].name && (c = playerCells[0].name);
-                        me ? ctx.fillStyle = "#FFAAAA" : ctx.fillStyle = "#FFFFFF";
-                        if (!noRanking) c = b + 1 + ". " + c;
-                        var start = (ctx.measureText(c).width > 200) ? 2 : 100 - ctx.measureText(c).width * 0.5;
-                        ctx.fillText(c, start, 70 + 24 * b);
+                        if (me) playerCells[0].name && (name = playerCells[0].name);
+                        
+                        // Cor do texto baseada no ranking
+                        if (me) {
+                            ctx.fillStyle = "#ff6b6b"; // Vermelho claro para o jogador
+                        } else if (b === 0) {
+                            ctx.fillStyle = "#ffd700"; // Dourado para #1
+                        } else if (b === 1) {
+                            ctx.fillStyle = "#c0c0c0"; // Prata para #2
+                        } else if (b === 2) {
+                            ctx.fillStyle = "#cd7f32"; // Bronze para #3
+                        } else {
+                            ctx.fillStyle = "#ffffff"; // Branco para os demais
+                        }
+                        
+                        var text = !noRanking ? (b + 1) + ". " + name : name;
+                        var textWidth = ctx.measureText(text).width;
+                        var start = textWidth > width - 20 ? offsetX + 10 : offsetX + width * 0.5 - textWidth * 0.5;
+                        ctx.fillText(text, start, offsetY + 70 + 24 * b);
                     }
                 } else {
+                    // Modo Teams - gráfico de pizza
                     for (b = c = 0; b < teamScores.length; ++b) {
                         var d = c + teamScores[b] * Math.PI * 2;
                         ctx.fillStyle = teamColor[b + 1];
                         ctx.beginPath();
-                        ctx.moveTo(100, 140);
-                        ctx.arc(100, 140, 80, c, d, false);
+                        ctx.moveTo(offsetX + width * 0.5, offsetY + 140);
+                        ctx.arc(offsetX + width * 0.5, offsetY + 140, 80, c, d, false);
                         ctx.fill();
                         c = d
                     }
