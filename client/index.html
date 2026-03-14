@@ -61,69 +61,137 @@
         <div id="helloDialog">
             <!-- Card Esquerdo - Profile -->
             <div id="profile-card">
-                <div class="profile-header">
-                    <div class="profile-left">
-                        <div class="avatar">
-                            <div class="avatar-img"><i class="fas fa-user"></i></div>
+                <!-- Estado Guest (Não Logado) -->
+                <div id="profile-guest" class="profile-state">
+                    <div class="guest-header">
+                        <div class="avatar guest-avatar">
+                            <div class="avatar-img"><i class="fas fa-user-slash"></i></div>
                         </div>
-                        <div class="profile-info">
-                            <h3 class="profile-name">Guest Player</h3>
-                            <span class="profile-handle">@player</span>
+                        <div class="guest-info">
+                            <h3 class="profile-name">Visitante</h3>
+                            <span class="profile-handle">Não logado</span>
                         </div>
                     </div>
-                    <div class="profile-balance">
-                        <span class="balance-icon"><i class="fas fa-coins"></i></span>
-                        <span class="balance-amount">1,250</span>
+                    
+                    <div class="auth-tabs">
+                        <button class="auth-tab active" onclick="switchAuthTab('login', this)">Entrar</button>
+                        <button class="auth-tab" onclick="switchAuthTab('register', this)">Registrar</button>
+                    </div>
+                    
+                    <!-- Tab Login -->
+                    <div id="auth-tab-login" class="auth-tab-content active">
+                        <div class="auth-form">
+                            <div class="form-group">
+                                <label><i class="fas fa-envelope"></i> Email</label>
+                                <input type="email" id="login-email" placeholder="seu@email.com">
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-lock"></i> Senha</label>
+                                <input type="password" id="login-password" placeholder="••••••••">
+                            </div>
+                            <button class="auth-btn login-btn" onclick="handleLogin()">
+                                <i class="fas fa-sign-in-alt"></i> Entrar
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Tab Register -->
+                    <div id="auth-tab-register" class="auth-tab-content">
+                        <div class="auth-form">
+                            <div class="form-group">
+                                <label><i class="fas fa-user"></i> Nome de usuário</label>
+                                <input type="text" id="register-username" placeholder="Seu nick">
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-envelope"></i> Email</label>
+                                <input type="email" id="register-email" placeholder="seu@email.com">
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-lock"></i> Senha</label>
+                                <input type="password" id="register-password" placeholder="••••••••">
+                            </div>
+                            <button class="auth-btn register-btn" onclick="handleRegister()">
+                                <i class="fas fa-user-plus"></i> Criar Conta
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="guest-footer">
+                        <p><i class="fas fa-info-circle"></i> Jogue como visitante ou crie uma conta para salvar seu progresso!</p>
                     </div>
                 </div>
                 
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <span class="stat-icon likes"><i class="fas fa-thumbs-up"></i></span>
-                        <span class="stat-value">1.2K</span>
-                        <span class="stat-label">Likes</span>
+                <!-- Estado Logado -->
+                <div id="profile-logged" class="profile-state" style="display: none;">
+                    <div class="profile-header">
+                        <div class="profile-left">
+                            <div class="avatar">
+                                <div class="avatar-img"><i class="fas fa-user"></i></div>
+                            </div>
+                            <div class="profile-info">
+                                <h3 class="profile-name" id="logged-username">Guest Player</h3>
+                                <span class="profile-handle" id="logged-handle">@player</span>
+                            </div>
+                        </div>
+                        <div class="profile-balance">
+                            <span class="balance-icon"><i class="fas fa-coins"></i></span>
+                            <span class="balance-amount" id="logged-balance">1,250</span>
+                        </div>
                     </div>
-                    <div class="stat-item">
-                        <span class="stat-icon dislikes"><i class="fas fa-thumbs-down"></i></span>
-                        <span class="stat-value">23</span>
-                        <span class="stat-label">Dislikes</span>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-icon likes"><i class="fas fa-thumbs-up"></i></span>
+                            <span class="stat-value" id="logged-likes">1.2K</span>
+                            <span class="stat-label">Likes</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-icon dislikes"><i class="fas fa-thumbs-down"></i></span>
+                            <span class="stat-value" id="logged-dislikes">23</span>
+                            <span class="stat-label">Dislikes</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-icon hours"><i class="fas fa-clock"></i></span>
+                            <span class="stat-value" id="logged-hours">156h</span>
+                            <span class="stat-label">Hours</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-icon kills"><i class="fas fa-skull"></i></span>
+                            <span class="stat-value" id="logged-kills">247</span>
+                            <span class="stat-label">Max Kills</span>
+                        </div>
                     </div>
-                    <div class="stat-item">
-                        <span class="stat-icon hours"><i class="fas fa-clock"></i></span>
-                        <span class="stat-value">156h</span>
-                        <span class="stat-label">Hours</span>
+                    
+                    <div class="passes-section">
+                        <h4><span class="section-icon"><i class="fas fa-crown"></i></span> My Passes</h4>
+                        <div class="passes-list">
+                            <span class="pass-tag premium"><i class="fas fa-crown"></i> Premium</span>
+                            <span class="pass-tag vip"><i class="fas fa-gem"></i> VIP</span>
+                            <span class="pass-tag elite"><i class="fas fa-trophy"></i> Elite</span>
+                        </div>
                     </div>
-                    <div class="stat-item">
-                        <span class="stat-icon kills"><i class="fas fa-skull"></i></span>
-                        <span class="stat-value">247</span>
-                        <span class="stat-label">Max Kills</span>
+                    
+                    <div class="emblems-section">
+                        <h4><span class="section-icon"><i class="fas fa-medal"></i></span> Emblems</h4>
+                        <div class="emblems-list">
+                            <span class="emblem"><i class="fas fa-star"></i></span>
+                            <span class="emblem"><i class="fas fa-trophy"></i></span>
+                            <span class="emblem"><i class="fas fa-shield-alt"></i></span>
+                            <span class="emblem"><i class="fas fa-bolt"></i></span>
+                            <span class="emblem"><i class="fas fa-fish"></i></span>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-actions">
+                        <button class="shop-btn" onclick="openShopModal()">
+                            <span class="btn-icon"><i class="fas fa-shopping-cart"></i></span>
+                            Shop
+                        </button>
+                        <button class="logout-btn" onclick="handleLogout()">
+                            <i class="fas fa-sign-out-alt"></i> Sair
+                        </button>
                     </div>
                 </div>
-                
-                <div class="passes-section">
-                    <h4><span class="section-icon"><i class="fas fa-crown"></i></span> My Passes</h4>
-                    <div class="passes-list">
-                        <span class="pass-tag premium"><i class="fas fa-crown"></i> Premium</span>
-                        <span class="pass-tag vip"><i class="fas fa-gem"></i> VIP</span>
-                        <span class="pass-tag elite"><i class="fas fa-trophy"></i> Elite</span>
-                    </div>
-                </div>
-                
-                <div class="emblems-section">
-                    <h4><span class="section-icon"><i class="fas fa-medal"></i></span> Emblems</h4>
-                    <div class="emblems-list">
-                        <span class="emblem"><i class="fas fa-star"></i></span>
-                        <span class="emblem"><i class="fas fa-trophy"></i></span>
-                        <span class="emblem"><i class="fas fa-shield-alt"></i></span>
-                        <span class="emblem"><i class="fas fa-bolt"></i></span>
-                        <span class="emblem"><i class="fas fa-fish"></i></span>
-                    </div>
-                </div>
-                
-                <button class="shop-btn" onclick="openShopModal()">
-                    <span class="btn-icon"><i class="fas fa-shopping-cart"></i></span>
-                    Shop
-                </button>
             </div>
 
             <!-- Center Column - Davos + Inventory -->
@@ -155,8 +223,15 @@
                         <div class="server-dropdown">
                             <i class="fas fa-server"></i>
                             <select id="gamemode" onchange="setserver($(this).val());" required>
-                                <option value="127.0.0.1:8080">Local Server (127.0.0.1:8080)</option>
-                                <option value="localhost:8080">FFA</option>
+                                <option value="FFA">FFA - Free For All</option>
+                                <option value="Teams">Teams - Equipes</option>
+                                <option value="Experimental">Experimental</option>
+                                <option value="Rainbow">Rainbow - Arco-íris</option>
+                                <option value="Tournament">Tournament - Torneio</option>
+                                <option value="HungerGames">Hunger Games</option>
+                                <option value="Zombie">Zombie - Zumbi</option>
+                                <option value="TeamX">TeamX - Time X</option>
+                                <option value="TeamZ">TeamZ - Time Z</option>
                             </select>
                             <i class="fas fa-chevron-down dropdown-arrow"></i>
                         </div>
