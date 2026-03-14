@@ -180,6 +180,19 @@
         };
 
         wHandle.onresize = canvasResize;
+        
+        // Detectar mudanças no devicePixelRatio (zoom do navegador)
+        var currentDPR = window.devicePixelRatio || 1;
+        function checkDPRChange() {
+            var newDPR = window.devicePixelRatio || 1;
+            if (newDPR !== currentDPR) {
+                currentDPR = newDPR;
+                canvasResize();
+            }
+        }
+        // Verificar mudanças de DPR a cada 500ms
+        setInterval(checkDPRChange, 500);
+        
         canvasResize();
         if (wHandle.requestAnimationFrame) {
             wHandle.requestAnimationFrame(redrawGameScene);
@@ -807,11 +820,26 @@
 
     function canvasResize() {
         window.scrollTo(0, 0);
+        
+        // Obter o devicePixelRatio considerando o zoom do navegador
+        var dpr = window.devicePixelRatio || 1;
+        
         canvasWidth = wHandle.innerWidth;
         canvasHeight = wHandle.innerHeight;
-        nCanvas.width = canvasWidth;
-        nCanvas.height = canvasHeight;
-        drawGameScene()
+        
+        // Configurar o canvas com o tamanho lógico (CSS)
+        nCanvas.style.width = canvasWidth + 'px';
+        nCanvas.style.height = canvasHeight + 'px';
+        
+        // Configurar o canvas com o tamanho real em pixels (considerando DPR)
+        nCanvas.width = Math.floor(canvasWidth * dpr);
+        nCanvas.height = Math.floor(canvasHeight * dpr);
+        
+        // Resetar a transformação e escalar o contexto para manter as proporções corretas
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.scale(dpr, dpr);
+        
+        drawGameScene();
     }
 
     function viewRange() {

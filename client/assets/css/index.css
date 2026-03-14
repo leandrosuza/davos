@@ -1971,3 +1971,438 @@ body:not(.light-theme) {
     accent-color: #00d4ff;
     flex-shrink: 0;
 }
+
+/* ============================================
+   RESPONSIVE DESIGN - MENU ADAPTATIVO
+   ============================================ */
+
+/* Ajustes gerais para o overlay */
+#overlays {
+    overflow-y: hidden;
+    overflow-x: hidden;
+    padding: 20px;
+}
+
+/* Telas grandes - Desktop (padrão já definido) */
+@media (max-width: 1200px) {
+    #helloDialog {
+        gap: 15px;
+        transform: scale(0.95);
+    }
+    
+    .davos-card,
+    #inventory-card {
+        width: 420px;
+    }
+    
+    #profile-card,
+    #leaderboard-card,
+    #battlepass-card {
+        width: 240px;
+    }
+}
+
+/* Tablets e laptops menores */
+@media (max-width: 1024px) {
+    #helloDialog {
+        flex-wrap: wrap;
+        justify-content: center;
+        max-width: 95vw;
+    }
+    
+    .center-column {
+        order: 1;
+    }
+    
+    .davos-card {
+        width: 450px;
+    }
+    
+    #inventory-card {
+        width: 450px;
+    }
+    
+    #profile-card {
+        order: 2;
+        width: 220px;
+    }
+    
+    .right-column {
+        order: 3;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 100%;
+    }
+    
+    #leaderboard-card,
+    #battlepass-card {
+        width: 220px;
+    }
+}
+
+/* Tablets em modo portrait e grandes smartphones */
+@media (max-width: 768px) {
+    #overlays {
+        padding: 10px;
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
+    
+    #helloDialog {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+        transform: scale(1);
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    #profile-card,
+    .davos-card,
+    #inventory-card,
+    #leaderboard-card,
+    #battlepass-card {
+        width: 100%;
+        max-width: 400px;
+        min-width: 280px;
+    }
+    
+    .center-column,
+    .right-column {
+        width: 100%;
+        align-items: center;
+    }
+    
+    .right-column {
+        flex-direction: column;
+    }
+    
+    #profile-card {
+        order: 1;
+    }
+    
+    .center-column {
+        order: 2;
+    }
+    
+    .right-column {
+        order: 3;
+    }
+    
+    /* Ajustes nos elementos internos */
+    .davos-title {
+        font-size: 28px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .inventory-grid {
+        grid-template-columns: repeat(6, 1fr);
+    }
+    
+    .cases-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    /* Ajustar tabs para não quebrar */
+    .davos-tabs {
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+    
+    .tab-btn {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+    
+    .tab-settings {
+        margin-left: 0;
+    }
+}
+
+/* Smartphones */
+@media (max-width: 480px) {
+    #overlays {
+        padding: 8px;
+    }
+    
+    #helloDialog {
+        gap: 10px;
+    }
+    
+    #profile-card,
+    .davos-card,
+    #inventory-card,
+    #leaderboard-card,
+    #battlepass-card {
+        max-width: 100%;
+        min-width: auto;
+        padding: 20px 16px;
+    }
+    
+    .davos-card {
+        padding: 20px 16px 25px 16px;
+    }
+    
+    /* Ajustar tamanhos de texto */
+    .davos-title {
+        font-size: 24px;
+        margin-bottom: 15px;
+    }
+    
+    .profile-name {
+        font-size: 14px;
+    }
+    
+    .profile-handle {
+        font-size: 11px;
+    }
+    
+    .avatar {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .avatar-img {
+        width: 45px;
+        height: 45px;
+        font-size: 20px;
+    }
+    
+    /* Ajustar grid de stats */
+    .stat-value {
+        font-size: 14px;
+    }
+    
+    .stat-label {
+        font-size: 9px;
+    }
+    
+    /* Ajustar inventory grid */
+    .inventory-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+    
+    .cases-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+    
+    /* Ajustar inputs */
+    .nickname-input input,
+    #nick {
+        padding: 14px 16px;
+        font-size: 14px;
+    }
+    
+    .server-dropdown select,
+    #gamemode {
+        padding: 12px 35px 12px 38px;
+        font-size: 12px;
+    }
+    
+    /* Ajustar botões */
+    .davos-play-btn {
+        padding: 16px 20px;
+        font-size: 16px;
+    }
+    
+    .shop-btn {
+        padding: 14px 20px;
+        font-size: 16px;
+    }
+    
+    /* Ajustar battle pass */
+    .battlepass-level {
+        gap: 10px;
+    }
+    
+    .level-badge {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .level-num {
+        font-size: 20px;
+    }
+    
+    .battlepass-rewards {
+        gap: 8px;
+    }
+    
+    .reward-item {
+        width: 60px;
+    }
+    
+    .reward-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 16px;
+    }
+    
+    /* Ajustar leaderboard */
+    .leaderboard-item {
+        font-size: 12px;
+        padding: 6px 0;
+    }
+    
+    /* Ajustar tabs do inventory */
+    .inventory-tabs {
+        gap: 5px;
+    }
+    
+    .inv-tab-btn {
+        padding: 5px 10px;
+        font-size: 12px;
+    }
+    
+    /* Modais em tela cheia em mobile */
+    .modal-content,
+    .shop-modal-content,
+    .case-modal-content,
+    .settings-modal-content {
+        width: 95%;
+        max-width: 95%;
+        margin: 10px;
+    }
+    
+    .case-modal-content {
+        width: 98%;
+    }
+    
+    .roulette-container {
+        height: 120px;
+    }
+    
+    .skin-card {
+        min-width: 80px;
+        height: 80px;
+    }
+    
+    .skin-card i {
+        font-size: 24px;
+    }
+}
+
+/* Telas muito pequenas */
+@media (max-width: 360px) {
+    #overlays {
+        padding: 5px;
+    }
+    
+    #profile-card,
+    .davos-card,
+    #inventory-card,
+    #leaderboard-card,
+    #battlepass-card {
+        padding: 16px 12px;
+    }
+    
+    .davos-title {
+        font-size: 22px;
+    }
+    
+    .inventory-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .tab-btn {
+        padding: 5px 10px;
+        font-size: 12px;
+    }
+    
+    .passes-list {
+        gap: 4px;
+    }
+    
+    .pass-tag {
+        padding: 4px 8px;
+        font-size: 9px;
+    }
+    
+    .emblems-list {
+        gap: 6px;
+    }
+    
+    .emblem {
+        width: 28px;
+        height: 28px;
+        font-size: 14px;
+    }
+}
+
+/* Ajuste para altura da tela (prevenir overflow vertical) */
+@media (max-height: 700px) {
+    #overlays {
+        align-items: flex-start;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+    
+    #helloDialog {
+        transform: scale(0.9);
+    }
+}
+
+@media (max-height: 600px) {
+    #helloDialog {
+        transform: scale(0.85);
+    }
+    
+    .davos-title {
+        margin-bottom: 15px;
+    }
+    
+    .skin-selector {
+        margin-bottom: 15px;
+    }
+    
+    .skin-box {
+        width: 60px;
+        height: 60px;
+    }
+}
+
+/* Landscape em smartphones */
+@media (max-height: 500px) and (orientation: landscape) {
+    #overlays {
+        padding: 5px;
+    }
+    
+    #helloDialog {
+        flex-direction: row;
+        flex-wrap: wrap;
+        transform: scale(0.8);
+    }
+    
+    .center-column {
+        order: 1;
+        width: 50%;
+    }
+    
+    #profile-card {
+        order: 2;
+        width: 45%;
+    }
+    
+    .right-column {
+        order: 3;
+        flex-direction: row;
+        width: 100%;
+        justify-content: center;
+    }
+    
+    #leaderboard-card,
+    #battlepass-card {
+        width: 45%;
+        max-width: 250px;
+    }
+    
+    #inventory-card {
+        display: none; /* Esconder inventory em landscape muito baixo */
+    }
+}
