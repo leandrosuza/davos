@@ -9,8 +9,18 @@
 body {
     font-family: 'Ubuntu', sans-serif;
     overflow: hidden;
-    background: #000;
+    background: var(--body-bg, #0a0a0a);
+    transition: background 0.3s ease;
     padding: 0;
+}
+
+/* Forçar fundo preto quando tema escuro está ativo */
+body:not(.light-theme) {
+    background: #0a0a0a !important;
+}
+
+body:not(.light-theme) #canvas {
+    background: #111111 !important;
 }
 
 /* Theme Variables */
@@ -460,10 +470,11 @@ body:not(.light-theme) {
     display: flex;
     flex-direction: row;
     gap: 10px;
-    align-items: flex-start;
+    align-items: center;
     justify-content: center;
     position: relative;
     margin: 0 auto;
+    max-height: 100vh;
 }
 
 /* Center Column - Davos + Inventory */
@@ -1181,15 +1192,16 @@ body:not(.light-theme) {
 
 .center-column,
 .right-column {
-width: 100%;
-align-items: center;
+    width: 100%;
+    align-items: center;
 }
-    }
-    
-    .right-column {
-        flex-direction: column;
-    }
-    
+
+.right-column {
+    flex-direction: column;
+}
+
+/* Tablets */
+@media (max-width: 1024px) {
     #profile-card {
         order: 1;
     }
@@ -1445,6 +1457,126 @@ align-items: center;
         height: 28px;
         font-size: 14px;
     }
+}
+
+/* ============================================
+   CASE WIN EFFECT - 3D ANIMATIONS
+   ============================================ */
+
+@keyframes cardReveal {
+    0% {
+        transform: scale(0) rotateY(-180deg);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1) rotateY(0deg);
+    }
+    100% {
+        transform: scale(1) rotateY(0deg);
+        opacity: 1;
+    }
+}
+
+@keyframes glowPulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.8;
+    }
+}
+
+@keyframes iconFloat {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+    }
+    50% {
+        transform: translateY(-10px) scale(1.05);
+    }
+}
+
+@keyframes textPulse {
+    0%, 100% {
+        transform: scale(1);
+        text-shadow: 0 0 30px #ffd700, 0 0 60px #ffd70040;
+    }
+    50% {
+        transform: scale(1.05);
+        text-shadow: 0 0 50px #ffd700, 0 0 100px #ffd70060;
+    }
+}
+
+@keyframes textReveal {
+    0% {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes btnReveal {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes particleFloat {
+    0%, 100% {
+        opacity: 0;
+        transform: translateY(0) scale(0);
+    }
+    10% {
+        opacity: 1;
+        transform: translateY(-20px) scale(1);
+    }
+    90% {
+        opacity: 1;
+        transform: translateY(-100px) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-120px) scale(0);
+    }
+}
+
+@keyframes confettiFall {
+    0% {
+        opacity: 1;
+        transform: translate(0, 0) rotate(0deg);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(var(--tx), var(--ty)) rotate(720deg);
+    }
+}
+
+#win-effect-overlay {
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+#win-card {
+    perspective: 1000px;
+    transform-style: preserve-3d;
+}
+
+#win-card:hover {
+    transform: scale(1.02) rotateY(5deg);
+    transition: transform 0.3s ease;
+}
+
+#win-particles {
+    background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.3) 100%);
 }
 
 /* Ajuste para altura da tela (prevenir overflow vertical) */

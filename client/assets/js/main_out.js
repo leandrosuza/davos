@@ -3,9 +3,9 @@
     var wsProtocol = wHandle.location.protocol === 'https:' ? 'wss:' : 'ws:';
     var wsHost = wHandle.location.host;
     
-    // For production deployments, use current domain. For local, use default
+    // For production deployments, use current domain. For local, use current port
     var isLocalhost = /localhost|127\.0\.0\.1/.test(wHandle.location.hostname);
-    var DEFAULT_CONNECTION = isLocalhost ? "127.0.0.1:8080" : wsHost;
+    var DEFAULT_CONNECTION = isLocalhost ? "127.0.0.1:" + wHandle.location.port : wsHost;
     var CONNECTION_URL = DEFAULT_CONNECTION;
     var SKIN_URL = "./skins/"; // Skin Directory
 
@@ -311,6 +311,7 @@
     function hideOverlays() {
         hasOverlay = false;
         wjQuery("#overlays").hide();
+        document.body.classList.add('game-active'); // Adiciona classe quando jogo inicia
         // Reiniciar loop de animação quando menu é fechado
         if (wHandle.requestAnimationFrame) {
             wHandle.requestAnimationFrame(redrawGameScene);
@@ -321,6 +322,7 @@
     function showOverlays(arg) {
         hasOverlay = true;
         userNickName = null;
+        document.body.classList.remove('game-active'); // Remove classe quando menu abre
         wjQuery("#overlays").fadeIn(arg ? 200 : 3E3);
     }
 
@@ -899,22 +901,29 @@
         }
         buildQTree();
         mouseCoordinateChange();
-        xa || ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-        if (xa) {
-            if (showDarkTheme) {
-                ctx.fillStyle = '#111111';
-                ctx.globalAlpha = .05;
-                ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-                ctx.globalAlpha = 1;
-            } else {
-                ctx.fillStyle = '#F2FBFF';
-                ctx.globalAlpha = .05;
-                ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-                ctx.globalAlpha = 1;
-            }
+        
+        // Sempre limpar o canvas completamente primeiro
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        
+        // Pintar o fundo com cor opaca baseada no tema
+        if (showDarkTheme) {
+            ctx.fillStyle = '#111111';
         } else {
-            drawGrid();
+            ctx.fillStyle = '#F2FBFF';
         }
+        ctx.globalAlpha = 1; // Opaco
+        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+        ctx.globalAlpha = 1;
+        
+        // Se xa (acid mode) estiver ativo, adicionar efeito sutil
+        if (xa) {
+            ctx.globalAlpha = 0.05;
+            ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+            ctx.globalAlpha = 1;
+        }
+        
+        // Desenhar o grid
+        drawGrid();
         nodelist.sort(function(a, b) {
             return a.size === b.size ? a.id - b.id : a.size - b.size
         });
@@ -1304,8 +1313,15 @@
         showDarkTheme = arg;
         if (arg) {
             document.body.classList.remove('light-theme');
+            document.body.style.background = '#0a0a0a'; // Fundo preto
         } else {
             document.body.classList.add('light-theme');
+            document.body.style.background = '#e8e8e8'; // Fundo claro
+        }
+        // Forçar atualização do canvas com a cor do tema
+        var canvas = document.getElementById('canvas');
+        if (canvas) {
+            canvas.style.background = arg ? '#111111' : '#F2FBFF';
         }
     };
     wHandle.setColors = function(arg) {
@@ -1531,6 +1547,75 @@
     // Roulette Functions
     var isSpinning = false;
 
+    // Simplified Win Effect - Show winner directly in roulette
+    function showCaseWinEffect(wonSkin) {
+        var roulette = document.getElementById('roulette');
+        var caseModal = document.getElementById('case-modal');
+        var openBtn = document.getElementById('openBtn');
+        
+        if (!roulette || !caseModal) return;
+        
+        // Get item data
+        var itemName = wonSkin.name || 'Unknown';
+        var itemWeapon = wonSkin.weapon || 'Item';
+        var itemIcon = wonSkin.icon || 'fa-gift';
+        var itemRarity = wonSkin.rarity || 'common';
+        var itemColor = wonSkin.rarityColor || '#ffd700';
+        
+        // Find winning card (the one at center)
+        var cards = Array.from(roulette.children);
+        var winningCard = cards[45]; // Card at position 45 is the winner
+        
+        if (winningCard) {
+            // Add winning highlight class
+            winningCard.classList.add('winning-card');
+            winningCard.style.cssText = 'background:linear-gradient(145deg, #1a1d29 0%, #0f1119 100%);border:3px solid ' + itemColor + ';border-radius:12px;box-shadow:0 0 60px ' + itemColor + '80, 0 10px 30px rgba(0,0,0,0.5);transform:scale(1.3) !important;z-index:100;position:relative;';
+            
+            // Add glow effect
+            var glow = document.createElement('div');
+            glow.className = 'win-glow';
+            glow.style.cssText = 'position:absolute;width:150px;height:150px;background:radial-gradient(circle, ' + itemColor + '60 0%, transparent 70%);border-radius:50%;z-index:99;animation:pulseGlow 1.5s ease-in-out infinite;';
+            winningCard.appendChild(glow);
+        }
+        
+        // Show YOU WON text overlay on roulette
+        var wonText = document.createElement('div');
+        wonText.className = 'roulette-won-text';
+        wonText.style.cssText = 'position:absolute;top:-40px;left:50%;transform:translateX(-50%);font-size:24px;font-weight:800;color:#ffd700;text-shadow:0 0 20px #ffd700, 0 0 40px #ffd70050;z-index:200;animation:textPulse 1.5s ease-in-out infinite;white-space:nowrap;';
+        wonText.innerHTML = '<i class="fas fa-trophy" style="margin-right:10px;"></i>YOU WON!';
+        
+        var rouletteContainer = roulette.parentElement;
+        rouletteContainer.appendChild(wonText);
+        
+        // Change button to collect prize
+        openBtn.innerHTML = '<i class="fas fa-check" style="margin-right:8px;"></i>Receber Prêmio';
+        openBtn.style.background = 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)';
+        openBtn.disabled = false;
+        openBtn.onclick = function() {
+            // Remove winning effects
+            if (winningCard) {
+                winningCard.classList.remove('winning-card');
+                winningCard.style.cssText = '';
+                var oldGlow = winningCard.querySelector('.win-glow');
+                if (oldGlow) oldGlow.remove();
+            }
+            if (wonText.parentNode) wonText.remove();
+            
+            // Reset button
+            openBtn.innerHTML = '<i class="fas fa-key"></i> OPEN CASE';
+            openBtn.style.background = '';
+            openBtn.onclick = wHandle.spinRoulette;
+            
+            // Reset roulette
+            roulette.style.transition = 'none';
+            roulette.style.transform = 'translateX(0)';
+            generateRoulette();
+            
+            // Close modal
+            caseModal.classList.remove('active');
+        };
+    }
+
     wHandle.spinRoulette = function() {
         if (isSpinning) return;
         
@@ -1624,15 +1709,9 @@
             openBtn.disabled = false;
             openBtn.innerHTML = '<i class="fas fa-key"></i> OPEN CASE';
             
-            // Show won skin
-            alert('You won: ' + wonSkin.weapon + ' | ' + wonSkin.name);
+            // Show 3D win effect instead of alert
+            showCaseWinEffect(wonSkin);
             
-            // Reset after a moment
-            setTimeout(function() {
-                roulette.style.transition = 'none';
-                roulette.style.transform = 'translateX(0)';
-                generateRoulette();
-            }, 500);
         }, 4050);
     };
 
@@ -1658,15 +1737,24 @@
             
             // Apply saved theme on load for menu cards
             var darkThemeValue = wHandle.localStorage.getItem("checkbox-3");
-            // Por padrão, dark mode está ativado (se não houver valor salvo)
-            if (darkThemeValue === null || darkThemeValue === "true") {
+            var canvas = document.getElementById('canvas');
+            // Por padrão, light mode está ativado (se não houver valor salvo)
+            if (darkThemeValue === "true") {
                 document.body.classList.remove('light-theme');
-                // Salvar preferência padrão se não existir
-                if (darkThemeValue === null) {
-                    wHandle.localStorage.setItem("checkbox-3", "true");
-                }
+                document.body.classList.remove('game-active');
+                document.body.style.background = '#0a0a0a'; // Fundo preto
+                showDarkTheme = true;
+                if (canvas) canvas.style.background = '#111111';
             } else {
                 document.body.classList.add('light-theme');
+                document.body.classList.remove('game-active');
+                document.body.style.background = '#e8e8e8'; // Fundo claro
+                showDarkTheme = false;
+                if (canvas) canvas.style.background = '#F2FBFF';
+                // Salvar preferência padrão se não existir
+                if (darkThemeValue === null) {
+                    wHandle.localStorage.setItem("checkbox-3", "false");
+                }
             }
         });
         if (null == wHandle.localStorage.AB8) {

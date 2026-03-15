@@ -1030,8 +1030,8 @@
 .case-modal-content {
     background: var(--card-bg, #1a1a2e);
     border-radius: 16px;
-    width: 700px;
-    max-width: 90%;
+    width: 850px;
+    max-width: 95%;
     box-shadow: 0 20px 60px rgba(0,0,0,0.7);
     animation: modalSlideIn 0.3s ease;
 }
@@ -1040,152 +1040,188 @@
     padding: 30px;
 }
 
-/* Roulette Section */
+/* Roulette Section - Simplified & Elegant */
 .roulette-section {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: 25px;
 }
 
 .roulette-container {
     position: relative;
     width: 100%;
     height: 140px;
-    background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.3) 100%);
-    border-radius: 12px;
-    overflow: hidden;
-    border: 2px solid var(--border-color);
+    background: linear-gradient(180deg, rgba(15, 17, 25, 0.8) 0%, rgba(26, 29, 41, 0.6) 50%, rgba(15, 17, 25, 0.8) 100%);
+    border-radius: 8px;
+    overflow: visible;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0 40px;
+}
+
+.roulette-container::before,
+.roulette-container::after {
+    display: none;
 }
 
 .selector-arrow {
     position: absolute;
-    top: 0;
+    top: -2px;
     left: 50%;
     transform: translateX(-50%);
     width: 0;
     height: 0;
-    border-left: 12px solid transparent;
-    border-right: 12px solid transparent;
-    border-top: 20px solid #ffd700;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 16px solid #ffd700;
     z-index: 10;
     filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
 }
 
 .roulette-wrapper {
     display: flex;
-    gap: 10px;
-    padding: 20px 10px;
+    gap: 8px;
+    padding: 10px;
     height: 100%;
     align-items: center;
     min-width: fit-content;
     will-change: transform;
-    opacity: 1 !important;
-    visibility: visible !important;
+    width: auto;
+    position: relative;
+    z-index: 6;
 }
 
-/* Skin Cards */
+/* Skin Cards - Minimalist */
 .skin-card {
-    min-width: 100px;
-    height: 100px;
-    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
-    border-radius: 10px;
+    min-width: 85px !important;
+    height: 85px !important;
+    background: linear-gradient(145deg, rgba(30, 35, 50, 0.95) 0%, rgba(20, 25, 35, 0.95) 100%) !important;
+    border-radius: 6px !important;
     display: flex !important;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    border: 2px solid;
-    flex-shrink: 0;
-    transition: transform 0.2s;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    border: 2px solid rgba(255, 255, 255, 0.3) !important;
+    flex-shrink: 0 !important;
+    transition: all 0.3s ease;
     visibility: visible !important;
     opacity: 1 !important;
-    position: relative;
+    position: relative !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+    color: white !important;
+}
+
+.skin-card:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(145deg, rgba(40, 45, 60, 0.95) 0%, rgba(30, 35, 45, 0.95) 100%);
+    border-color: rgba(255, 255, 255, 0.25);
 }
 
 .skin-card i {
-    font-size: 28px;
+    font-size: 24px;
     margin-bottom: 2px;
 }
 
 .skin-name {
-    font-size: 9px;
-    font-weight: 700;
-    color: var(--card-text);
-    text-align: center;
-    padding: 0 5px;
-    max-width: 90px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    font-size: 8px !important;
+    font-weight: 600 !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    text-align: center !important;
+    padding: 0 4px !important;
+    max-width: 75px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    letter-spacing: 0.3px !important;
 }
 
 .skin-weapon {
-    font-size: 8px;
-    color: var(--card-text-secondary);
-    text-transform: uppercase;
+    font-size: 7px !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
 }
 
-/* Skin Rarities */
+/* Win Effect Animations */
+@keyframes pulseGlow {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
+}
+
+@keyframes textPulse {
+    0%, 100% { transform: translateX(-50%) scale(1); }
+    50% { transform: translateX(-50%) scale(1.1); }
+}
+
+.winning-card {
+    transition: all 0.3s ease;
+}
+
+.roulette-won-text {
+    pointer-events: none;
+}
+
+/* Skin Rarities - Subtle */
 .skin-card.consumer {
-    border-color: #b0c3d9;
-    background: linear-gradient(135deg, rgba(176, 195, 217, 0.15) 0%, rgba(176, 195, 217, 0.05) 100%);
+    border-color: rgba(176, 195, 217, 0.5);
+    background: linear-gradient(145deg, rgba(176, 195, 217, 0.2) 0%, rgba(176, 195, 217, 0.1) 100%);
 }
 
 .skin-card.industrial {
-    border-color: #5e98d9;
-    background: linear-gradient(135deg, rgba(94, 152, 217, 0.15) 0%, rgba(94, 152, 217, 0.05) 100%);
+    border-color: rgba(94, 152, 217, 0.5);
+    background: linear-gradient(145deg, rgba(94, 152, 217, 0.2) 0%, rgba(94, 152, 217, 0.1) 100%);
 }
 
 .skin-card.milspec {
-    border-color: #4b69ff;
-    background: linear-gradient(135deg, rgba(75, 105, 255, 0.15) 0%, rgba(75, 105, 255, 0.05) 100%);
+    border-color: rgba(75, 105, 255, 0.5);
+    background: linear-gradient(145deg, rgba(75, 105, 255, 0.2) 0%, rgba(75, 105, 255, 0.1) 100%);
 }
 
 .skin-card.restricted {
-    border-color: #8847ff;
-    background: linear-gradient(135deg, rgba(136, 71, 255, 0.15) 0%, rgba(136, 71, 255, 0.05) 100%);
+    border-color: rgba(136, 71, 255, 0.5);
+    background: linear-gradient(145deg, rgba(136, 71, 255, 0.2) 0%, rgba(136, 71, 255, 0.1) 100%);
 }
 
 .skin-card.classified {
-    border-color: #d32ce6;
-    background: linear-gradient(135deg, rgba(211, 44, 230, 0.15) 0%, rgba(211, 44, 230, 0.05) 100%);
+    border-color: rgba(211, 44, 230, 0.5);
+    background: linear-gradient(145deg, rgba(211, 44, 230, 0.2) 0%, rgba(211, 44, 230, 0.1) 100%);
 }
 
 .skin-card.covert {
-    border-color: #eb4b4b;
-    background: linear-gradient(135deg, rgba(235, 75, 75, 0.15) 0%, rgba(235, 75, 75, 0.05) 100%);
+    border-color: rgba(235, 75, 75, 0.5);
+    background: linear-gradient(145deg, rgba(235, 75, 75, 0.2) 0%, rgba(235, 75, 75, 0.1) 100%);
 }
 
-/* Open Button */
+/* Open Button - Clean */
 .open-btn {
-    width: 200px;
-    padding: 15px 24px;
-    font-size: 16px;
+    width: 180px;
+    padding: 14px 28px;
+    font-size: 14px;
     border: none;
-    border-radius: 10px;
+    border-radius: 8px;
     font-family: 'Ubuntu', sans-serif;
     font-weight: 700;
     cursor: pointer;
-    background: linear-gradient(135deg, #ffd700 0%, #ffa000 100%);
-    color: #fff;
+    background: linear-gradient(135deg, #ffd700 0%, #ffb700 100%);
+    color: #0a0a0a;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: all 0.2s ease;
+    letter-spacing: 1.5px;
+    transition: all 0.25s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    gap: 10px;
 }
 
 .open-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(255, 160, 0, 0.5);
+    box-shadow: 0 8px 20px rgba(255, 183, 0, 0.35);
 }
 
 .open-btn:disabled {
-    background: linear-gradient(135deg, #666 0%, #444 100%);
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.3);
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
@@ -1286,5 +1322,145 @@
     cursor: pointer;
     accent-color: #00d4ff;
     flex-shrink: 0;
+}
+
+/* ============================================
+   BACKPACK MODAL STYLES
+   ============================================ */
+
+.backpack-modal-content {
+    background: var(--card-bg);
+    border-radius: 20px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+    animation: modalSlideIn 0.3s ease;
+}
+
+.backpack-body {
+    padding: 25px;
+    max-height: calc(80vh - 80px);
+    overflow-y: auto;
+}
+
+.backpack-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+.backpack-tab {
+    background: none;
+    border: none;
+    color: var(--tab-inactive);
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+}
+
+.backpack-tab:hover {
+    color: var(--card-text);
+}
+
+.backpack-tab.active {
+    color: var(--card-text);
+}
+
+.backpack-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -11px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #00d4ff;
+}
+
+.backpack-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 15px;
+    min-height: 200px;
+}
+
+.empty-backpack {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    color: var(--tab-inactive);
+    text-align: center;
+}
+
+.empty-backpack i {
+    font-size: 48px;
+    margin-bottom: 15px;
+    opacity: 0.5;
+}
+
+.empty-backpack p {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: var(--card-text);
+}
+
+.empty-backpack span {
+    font-size: 13px;
+    color: var(--card-text-secondary);
+}
+
+.backpack-item {
+    background: var(--stat-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.backpack-item:hover {
+    transform: translateY(-3px);
+    border-color: rgba(0, 212, 255, 0.5);
+    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.2);
+}
+
+.backpack-item-icon {
+    font-size: 32px;
+    margin-bottom: 5px;
+}
+
+.backpack-item-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--card-text);
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+.backpack-item-category {
+    font-size: 10px;
+    color: var(--card-text-secondary);
+    text-transform: uppercase;
+    background: var(--stat-bg-hover);
+    padding: 3px 8px;
+    border-radius: 10px;
 }
 

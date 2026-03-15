@@ -1,0 +1,23 @@
+<!-- Backpack/Inventory Modal -->
+<div id="backpack-modal" class="modal">
+    <div class="modal-content backpack-modal-content">
+        <div class="modal-header">
+            <h2><i class="fas fa-suitcase"></i> Mochila</h2>
+            <button class="modal-close" onclick="closeBackpackModal()">&times;</button>
+        </div>
+        <div class="modal-body backpack-body">
+            <div class="backpack-tabs">
+                <button class="backpack-tab active" onclick="switchBackpackTab('skins')">Skins</button>
+                <button class="backpack-tab" onclick="switchBackpackTab('effects')">Efeitos</button>
+                <button class="backpack-tab" onclick="switchBackpackTab('passes')">Passes</button>
+            </div>
+            <div class="backpack-grid" id="backpack-items">
+                <div class="empty-backpack">
+                    <i class="fas fa-box-open"></i>
+                    <p>Sua mochila está vazia</p>
+                    <span>Compre itens na loja para vê-los aqui</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

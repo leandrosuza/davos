@@ -338,17 +338,154 @@ function switchShopTab(tabName) {
 
 // Buy Item Function
 function buyItem(itemId, price) {
+    // Definir detalhes do item baseado no ID
+    const itemDetails = {
+        'dragon': { name: 'Dragon Skin', icon: 'fa-crosshairs', color: '#ff4b4b', category: 'skins' },
+        'karambit': { name: 'Karambit Gold', icon: 'fa-khanda', color: '#8847ff', category: 'skins' },
+        'gloves': { name: 'Elite Gloves', icon: 'fa-hand-paper', color: '#d32ce6', category: 'skins' },
+        'fire': { name: 'Fire Effect', icon: 'fa-fire', color: '#ff6600', category: 'effects' },
+        'crown': { name: 'Crown Skin', icon: 'fa-crown', color: '#ffd700', category: 'skins' },
+        'ghost': { name: 'Ghost Mode', icon: 'fa-ghost', color: '#4b69ff', category: 'effects' }
+    };
+    
+    const item = itemDetails[itemId];
+    if (!item) return;
+    
+    // Recuperar inventário atual do localStorage
+    let inventory = JSON.parse(localStorage.getItem('davos_inventory') || '[]');
+    
+    // Adicionar item ao inventário
+    const newItem = {
+        id: itemId,
+        name: item.name,
+        icon: item.icon,
+        color: item.color,
+        category: item.category,
+        purchasedAt: new Date().toISOString()
+    };
+    
+    // Verificar se item já existe
+    const existingItem = inventory.find(i => i.id === itemId);
+    if (existingItem) {
+        openMessageModal('Aviso', 'Você já possui este item!', 'info');
+        return;
+    }
+    
+    inventory.push(newItem);
+    localStorage.setItem('davos_inventory', JSON.stringify(inventory));
+    
     if (typeof openMessageModal === 'function') {
-        openMessageModal('Compra Simulada', 'Item ' + itemId + ' comprado por ' + price + ' coins!', 'info');
+        openMessageModal('Compra Realizada', `Item "${item.name}" comprado por ${price} coins!`, 'info');
+    }
+    
+    // Atualizar grid de inventário se estiver visível
+    updateBackpackDisplay();
+}
+
+// Backpack Modal Functions
+function openBackpackModal() {
+    const modal = document.getElementById('backpack-modal');
+    if (modal) {
+        modal.classList.add('active');
+        updateBackpackDisplay();
     }
 }
 
-function startGame() {
-    const nick = document.getElementById('nick').value;
-    if (typeof setNick === 'function') {
-        setNick(nick);
+function closeBackpackModal() {
+    const modal = document.getElementById('backpack-modal');
+    if (modal) {
+        modal.classList.remove('active');
     }
 }
+
+function switchBackpackTab(category) {
+    // Atualizar tabs visuais
+    document.querySelectorAll('.backpack-tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    
+    // Atualizar display
+    updateBackpackDisplay(category);
+}
+
+function updateBackpackDisplay(category = 'all') {
+    const grid = document.getElementById('backpack-items');
+    if (!grid) return;
+    
+    const inventory = JSON.parse(localStorage.getItem('davos_inventory') || '[]');
+    
+    // Filtrar por categoria se necessário
+    const items = category === 'all' ? inventory : inventory.filter(item => item.category === category);
+    
+    if (items.length === 0) {
+        grid.innerHTML = `
+            <div class="empty-backpack">
+                <i class="fas fa-box-open"></i>
+                <p>Sua mochila está vazia</p>
+                <span>Compre itens na loja para vê-los aqui</span>
+            </div>
+        `;
+        return;
+    }
+    
+    // Renderizar items
+    grid.innerHTML = items.map(item => `
+        <div class="backpack-item" data-id="${item.id}">
+            <div class="backpack-item-icon" style="color: ${item.color}">
+                <i class="fas ${item.icon}"></i>
+            </div>
+            <div class="backpack-item-name">${item.name}</div>
+            <div class="backpack-item-category">${getCategoryLabel(item.category)}</div>
+        </div>
+    `).join('');
+}
+
+function getCategoryLabel(category) {
+    const labels = {
+        'skins': 'Skin',
+        'effects': 'Efeito',
+        'passes': 'Passe'
+    };
+    return labels[category] || category;
+}
+
+// Atualizar grid de inventário ao carregar página
+function updateInventoryGrid() {
+    const inventory = JSON.parse(localStorage.getItem('davos_inventory') || '[]');
+    const grid = document.querySelector('.inventory-grid');
+    
+    if (!grid) return;
+    
+    // Limpar slots existentes
+    grid.innerHTML = '';
+    
+    // Criar 6 slots (preencher com items ou vazio)
+    for (let i = 0; i < 6; i++) {
+        const item = inventory[i];
+        if (item) {
+            grid.innerHTML += `
+                <div class="inventory-item" onclick="openBackpackModal()">
+                    <div class="item-icon" style="color: ${item.color}">
+                        <i class="fas ${item.icon}"></i>
+                    </div>
+                </div>
+            `;
+        } else {
+            grid.innerHTML += `
+                <div class="inventory-item empty" onclick="openBackpackModal()">
+                    <i class="fas fa-plus"></i>
+                </div>
+            `;
+        }
+    }
+}
+
+// Inicializar inventário ao carregar página
+document.addEventListener('DOMContentLoaded', function() {
+    updateInventoryGrid();
+});
+
 
 function openSkinsModal() {
     const modal = document.getElementById('skinsModal');
@@ -504,7 +641,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // DEBUG: Verificar se modais estão no DOM
     console.log('=== DEBUG MODAIS ===');
     const modals = [
-        'shop-modal', 'case-modal', 'settings-modal', 
+        'shop-modal', 'backpack-modal', 'case-modal', 'settings-modal', 
         'battlepass-modal', 'leaderboard-modal', 'skinsModal',
         'clanModal', 'updatesModal', 'messageModal'
     ];
@@ -527,7 +664,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Função para carregar modais dinamicamente se PHP falhar
 function loadModalsDynamically() {
     const modalsToLoad = [
-        'settings.html', 'shop.html', 'cases.html', 
+        'settings.html', 'shop.html', 'backpack.html', 'cases.html', 
         'battlepass.html', 'leaderboard.html', 'skins.html',
         'message.html', 'clan.html', 'updates.html'
     ];

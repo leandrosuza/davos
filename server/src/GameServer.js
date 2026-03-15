@@ -59,7 +59,7 @@ function GameServer() {
     // Config
     this.config = { // Border - Right: X increases, Down: Y increases (as of 2015-05-20)
         serverMaxConnections: 64, // Maximum amount of connections to the server.
-        serverPort: 443, // Server port
+        serverPort: 9999, // Server port
         serverGamemode: 0, // Gamemode, 0 = FFA, 1 = Teams
         serverBots: 0, // Amount of player bots to spawn
         serverViewBaseX: 1024, // Base view distance of players. Warning: high values may cause lag
@@ -144,8 +144,8 @@ GameServer.prototype.start = function() {
     // Create quadtree
     this.quadTree = new QuadTree(null, this.rangeBorders(), 128, 12);
 
-    // Use Railway PORT or fallback to 8080
-    var serverPort = process.env.PORT || 8080;
+    // Use config serverPort or Railway PORT or fallback to 8080
+    var serverPort = this.config.serverPort || process.env.PORT || 8080;
 
     // Start HTTP server first (for both static files and WebSocket)
     this.startStatsServer(serverPort);
@@ -500,8 +500,9 @@ GameServer.prototype.spawnPlayer = function(player, pos, mass) {
 
 GameServer.prototype.loadConfig = function() {
     try {
-        // Load the contents of the config file
-        var load = ini.parse(fs.readFileSync('./gameserver.ini', 'utf-8'));
+        // Load the contents of the config file from the server directory
+        var configPath = path.join(__dirname, '..', '..', 'gameserver.ini');
+        var load = ini.parse(fs.readFileSync(configPath, 'utf-8'));
 
         // Replace all the default config's values with the loaded config's values
         for (var obj in load) {
@@ -511,8 +512,9 @@ GameServer.prototype.loadConfig = function() {
         // No config
         console.log("[Game] Config not found... Generating new config");
 
-        // Create a new config
-        fs.writeFileSync('./gameserver.ini', ini.stringify(this.config));
+        // Create a new config in the project root
+        var configPath = path.join(__dirname, '..', '..', 'gameserver.ini');
+        fs.writeFileSync(configPath, ini.stringify(this.config));
     }
 };
 
