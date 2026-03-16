@@ -1,4 +1,4 @@
-/* Agar.io Clone - Menu Style */
+/* Davos.io Clone - Menu Style */
 
 * {
     box-sizing: border-box;
@@ -9,17 +9,17 @@
 body {
     font-family: 'Ubuntu', sans-serif;
     overflow: hidden;
-    background: var(--body-bg, #0a0a0a);
+    background: var(--body-bg, #e8e8e8);
     transition: background 0.3s ease;
     padding: 0;
 }
 
-/* Forçar fundo preto quando tema escuro está ativo */
-body:not(.light-theme) {
+/* Forçar fundo escuro quando tema escuro está ativo */
+body.dark-theme {
     background: #0a0a0a !important;
 }
 
-body:not(.light-theme) #canvas {
+body.dark-theme #canvas {
     background: #111111 !important;
 }
 
@@ -39,7 +39,7 @@ body.light-theme {
     --border-color: rgba(0,0,0,0.1);
 }
 
-body:not(.light-theme) {
+body.dark-theme {
     --card-bg: linear-gradient(145deg, #1a1d29 0%, #0f1119 100%);
     --card-text: #fff;
     --card-text-secondary: #9ca3af;
@@ -1577,78 +1577,6 @@ body:not(.light-theme) {
 
 #win-particles {
     background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.3) 100%);
-}
-
-/* Ajuste para altura da tela (prevenir overflow vertical) */
-@media (max-height: 700px) {
-    #overlays {
-        align-items: flex-start;
-        padding-top: 10px;
-        padding-bottom: 10px;
-    }
-    
-    #helloDialog {
-        transform: scale(0.9);
-    }
-}
-
-@media (max-height: 600px) {
-    #helloDialog {
-        transform: scale(0.85);
-    }
-    
-    .davos-title {
-        margin-bottom: 15px;
-    }
-    
-    .skin-selector {
-        margin-bottom: 15px;
-    }
-    
-    .skin-box {
-        width: 60px;
-        height: 60px;
-    }
-}
-
-/* Landscape em smartphones */
-@media (max-height: 500px) and (orientation: landscape) {
-    #overlays {
-        padding: 5px;
-    }
-    
-    #helloDialog {
-        flex-direction: row;
-        flex-wrap: wrap;
-        transform: scale(0.8);
-    }
-    
-    .center-column {
-        order: 1;
-        width: 50%;
-    }
-    
-    #profile-card {
-        order: 2;
-        width: 45%;
-    }
-    
-    .right-column {
-        order: 3;
-        flex-direction: row;
-        width: 100%;
-        justify-content: center;
-    }
-    
-    #leaderboard-card,
-    #battlepass-card {
-        width: 45%;
-        max-width: 250px;
-    }
-    
-    #inventory-card {
-        display: none; /* Esconder inventory em landscape muito baixo */
-    }
 }
 
 /* ============================================

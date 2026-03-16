@@ -1,7 +1,7 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "Open source Agar.io server",
+  "description": "Open source Davos.io server",
   "main": "src/index.js",
   "dependencies": {
     "asyncconsole": "latest",

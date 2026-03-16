@@ -322,7 +322,7 @@
     function showOverlays(arg) {
         hasOverlay = true;
         userNickName = null;
-        document.body.classList.remove('game-active'); // Remove classe quando menu abre
+        document.body.classList.remove('game-active');
         wjQuery("#overlays").fadeIn(arg ? 200 : 3E3);
     }
 
@@ -820,15 +820,32 @@
     }
 
     function redrawGameScene() {
-        // Pausar renderização apenas quando no lobby (sem células) e menu aberto
-        // Durante partida (com células), continuar animação mesmo com menu aberto
+        // Se menu estiver aberto mas jogador tem células (em partida), continuar desenhando o jogo completo
+        // Se menu estiver aberto e sem células (lobby), desenhar apenas o grid animado
         if (hasOverlay && playerCells.length === 0) {
-            // Apenas desenhar uma vez o estado atual sem continuar o loop
-            drawGameScene();
+            // Lobby - apenas grid animado
+            drawGridOnly();
+            wHandle.requestAnimationFrame(redrawGameScene);
             return;
         }
+        // Durante partida (com ou sem menu aberto), desenhar jogo completo
         drawGameScene();
         wHandle.requestAnimationFrame(redrawGameScene)
+    }
+
+    // Desenhar apenas o grid animado (para fundo do menu)
+    function drawGridOnly() {
+        if (!ctx || !canvasWidth || !canvasHeight) return;
+        
+        // Limpar canvas
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        
+        // Atualizar posição do grid para animação suave
+        nodeX = (29 * nodeX + posX) / 30;
+        nodeY = (29 * nodeY + posY) / 30;
+        
+        // Desenhar grid animado
+        drawGrid();
     }
 
     function canvasResize() {
@@ -1312,9 +1329,13 @@
     wHandle.setDarkTheme = function(arg) {
         showDarkTheme = arg;
         if (arg) {
+            // Tema escuro ativado
             document.body.classList.remove('light-theme');
+            document.body.classList.add('dark-theme');
             document.body.style.background = '#0a0a0a'; // Fundo preto
         } else {
+            // Tema claro (padrao)
+            document.body.classList.remove('dark-theme');
             document.body.classList.add('light-theme');
             document.body.style.background = '#e8e8e8'; // Fundo claro
         }
@@ -1468,16 +1489,26 @@
     // Cases Modal Function
     wHandle.openCasesModal = function() {
         var modal = document.getElementById('case-modal');
+        var boostersModal = document.getElementById('boosters-modal');
         if (modal) {
             modal.classList.add('active');
             generateRoulette();
+        }
+        // Open Boosters panel alongside roulette modal
+        if (boostersModal) {
+            boostersModal.classList.add('active');
         }
     };
 
     wHandle.closeCaseModal = function() {
         var modal = document.getElementById('case-modal');
+        var boostersModal = document.getElementById('boosters-modal');
         if (modal) {
             modal.classList.remove('active');
+        }
+        // Close Boosters panel when roulette modal closes
+        if (boostersModal) {
+            boostersModal.classList.remove('active');
         }
     };
 
@@ -1521,9 +1552,23 @@
         };
     }
 
-    // Generate Roulette
+    // Track Trick Open state
+    var trickOpenState = false;
+
+    // Generate Roulette - supports single or triple
     function generateRoulette() {
-        var roulette = document.getElementById('roulette');
+        // Always generate middle roulette (main one)
+        generateSingleRoulette('roulette2');
+        
+        if (trickOpenState) {
+            // Also generate extra roulettes when Trick Open is active
+            generateSingleRoulette('roulette1');
+            generateSingleRoulette('roulette3');
+        }
+    }
+    
+    function generateSingleRoulette(elementId) {
+        var roulette = document.getElementById(elementId);
         if (!roulette) return;
         
         var skins = [];
@@ -1543,13 +1588,67 @@
         roulette.style.transition = 'none';
         roulette.style.transform = 'translateX(0)';
     }
+    
+    // Toggle Trick Open mode
+    wHandle.toggleTrickOpen = function() {
+        // Prevent toggling while spinning
+        if (isSpinning) {
+            console.log('[Trick Open] Cannot toggle while spinning');
+            return;
+        }
+        
+        var rouletteLayer1 = document.getElementById('rouletteLayer1');
+        var rouletteLayer3 = document.getElementById('rouletteLayer3');
+        var openBtn = document.getElementById('openBtn');
+        var trickOpenBtn = document.getElementById('trickOpenBtn');
+        var trickOpenStatus = document.getElementById('trickOpenStatus');
+        
+        // Toggle state
+        trickOpenState = !trickOpenState;
+        
+        if (trickOpenState) {
+            // Show extra roulettes (top and bottom)
+            if (rouletteLayer1) rouletteLayer1.style.display = 'flex';
+            if (rouletteLayer3) rouletteLayer3.style.display = 'flex';
+            openBtn.innerHTML = '<i class="fas fa-layer-group"></i> OPEN 3x';
+            // Update button UI
+            if (trickOpenBtn) trickOpenBtn.classList.add('active');
+            if (trickOpenStatus) trickOpenStatus.textContent = 'Ativado';
+            // Generate cards for extra roulettes only (middle already exists)
+            generateSingleRoulette('roulette1');
+            generateSingleRoulette('roulette3');
+        } else {
+            // Hide extra roulettes (top and bottom)
+            if (rouletteLayer1) rouletteLayer1.style.display = 'none';
+            if (rouletteLayer3) rouletteLayer3.style.display = 'none';
+            openBtn.innerHTML = '<i class="fas fa-key"></i> Girar';
+            // Update button UI
+            if (trickOpenBtn) trickOpenBtn.classList.remove('active');
+            if (trickOpenStatus) trickOpenStatus.textContent = 'Desativado';
+        }
+    };
+    
+    // Boosters Modal Functions
+    wHandle.openBoostersModal = function() {
+        var boostersModal = document.getElementById('boosters-modal');
+        if (boostersModal) {
+            boostersModal.classList.add('active');
+        }
+    };
+    
+    wHandle.closeBoostersModal = function() {
+        var boostersModal = document.getElementById('boosters-modal');
+        if (boostersModal) {
+            boostersModal.classList.remove('active');
+        }
+    };
 
     // Roulette Functions
     var isSpinning = false;
 
     // Simplified Win Effect - Show winner directly in roulette
     function showCaseWinEffect(wonSkin) {
-        var roulette = document.getElementById('roulette');
+        var roulette = document.getElementById('roulette2');
         var caseModal = document.getElementById('case-modal');
         var openBtn = document.getElementById('openBtn');
         
@@ -1578,141 +1677,598 @@
             winningCard.appendChild(glow);
         }
         
-        // Show YOU WON text overlay on roulette
-        var wonText = document.createElement('div');
-        wonText.className = 'roulette-won-text';
-        wonText.style.cssText = 'position:absolute;top:-40px;left:50%;transform:translateX(-50%);font-size:24px;font-weight:800;color:#ffd700;text-shadow:0 0 20px #ffd700, 0 0 40px #ffd70050;z-index:200;animation:textPulse 1.5s ease-in-out infinite;white-space:nowrap;';
-        wonText.innerHTML = '<i class="fas fa-trophy" style="margin-right:10px;"></i>YOU WON!';
+        // Confetti effect function - 4 corners of roulette, only for epic+ items
+        function shootConfetti() {
+            // Only show confetti for epic, legendary, or higher rarities
+            var highTiers = ['epic', 'legendary', 'mythic', 'rare'];
+            if (highTiers.indexOf(itemRarity) === -1) return;
+            
+            var colors = ['#ffd700', '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#dfe6e9', '#74b9ff', '#ff9ff3', '#54a0ff'];
+            var container = document.body;
+            
+            // Get roulette container position for corner spawning
+            var rouletteRect = roulette.parentElement.getBoundingClientRect();
+            var corners = [
+                { x: rouletteRect.left, y: rouletteRect.top },
+                { x: rouletteRect.right, y: rouletteRect.top },
+                { x: rouletteRect.left, y: rouletteRect.bottom },
+                { x: rouletteRect.right, y: rouletteRect.bottom }
+            ];
+            
+            var confettiPerCorner = 15;
+            
+            for (var corner = 0; corner < 4; corner++) {
+                for (var i = 0; i < confettiPerCorner; i++) {
+                    (function(cornerIndex, index) {
+                        setTimeout(function() {
+                            var confetti = document.createElement('div');
+                            var color = colors[Math.floor(Math.random() * colors.length)];
+                            var size = 8 + Math.random() * 8;
+                            var startPos = corners[cornerIndex];
+                            
+                            confetti.style.cssText = 'position:fixed;width:' + size + 'px;height:' + size + 'px;background:' + color + ';border-radius:50%;pointer-events:none;z-index:100001;left:' + startPos.x + 'px;top:' + startPos.y + 'px;will-change:transform,opacity;';
+                            container.appendChild(confetti);
+                            
+                            // Shoot outward from corner
+                            var angle = (cornerIndex * Math.PI / 2) + (Math.random() - 0.5) * 1.5;
+                            var velocity = 3 + Math.random() * 5;
+                            var vx = Math.cos(angle) * velocity;
+                            var vy = Math.sin(angle) * velocity - 3;
+                            var x = 0;
+                            var y = 0;
+                            var gravity = 0.15;
+                            var opacity = 1;
+                            var rotation = Math.random() * 360;
+                            var rotationSpeed = (Math.random() - 0.5) * 8;
+                            
+                            function animate() {
+                                x += vx;
+                                y += vy;
+                                vy += gravity;
+                                rotation += rotationSpeed;
+                                opacity -= 0.004;
+                                
+                                confetti.style.transform = 'translate(' + x + 'px, ' + y + 'px) rotate(' + rotation + 'deg)';
+                                confetti.style.opacity = opacity;
+                                
+                                if (opacity > 0 && y < window.innerHeight) {
+                                    requestAnimationFrame(animate);
+                                } else {
+                                    confetti.remove();
+                                }
+                            }
+                            
+                            requestAnimationFrame(animate);
+                        }, (cornerIndex * confettiPerCorner + index) * 40);
+                    })(corner, i);
+                }
+            }
+        }
         
-        var rouletteContainer = roulette.parentElement;
-        rouletteContainer.appendChild(wonText);
+        // Shoot confetti when winning
+        shootConfetti();
         
-        // Change button to collect prize
-        openBtn.innerHTML = '<i class="fas fa-check" style="margin-right:8px;"></i>Receber Prêmio';
+        // Change button to Girar Novamente
+        openBtn.innerHTML = '<i class="fas fa-redo" style="margin-right:8px;"></i>Girar Novamente';
         openBtn.style.background = 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)';
         openBtn.disabled = false;
         openBtn.onclick = function() {
-            // Remove winning effects
+            // Remove winning effects - shrink card back to normal
             if (winningCard) {
                 winningCard.classList.remove('winning-card');
                 winningCard.style.cssText = '';
                 var oldGlow = winningCard.querySelector('.win-glow');
                 if (oldGlow) oldGlow.remove();
             }
-            if (wonText.parentNode) wonText.remove();
             
-            // Reset button
-            openBtn.innerHTML = '<i class="fas fa-key"></i> OPEN CASE';
+            // Reset button to initial state
+            openBtn.innerHTML = '<i class="fas fa-key"></i> Girar';
             openBtn.style.background = '';
-            openBtn.onclick = wHandle.spinRoulette;
             
-            // Reset roulette
+            // Reset roulette position
             roulette.style.transition = 'none';
             roulette.style.transform = 'translateX(0)';
+            
+            // Regenerate cards for new spin
             generateRoulette();
             
-            // Close modal
-            caseModal.classList.remove('active');
+            // Small delay then spin automatically
+            setTimeout(function() {
+                wHandle.spinRoulette();
+            }, 100);
         };
+    }
+    
+    // Triple Win Effect - Show 3 winners in triple roulette
+    function showTripleWinEffect(wonSkins) {
+        console.log('[showTripleWinEffect] START - Called with', wonSkins.length, 'skins:', wonSkins.map(s => s.name).join(', '));
+        var caseModal = document.getElementById('case-modal');
+        var openBtn = document.getElementById('openBtn');
+        
+        if (!caseModal) {
+            console.log('[showTripleWinEffect] ERROR: case-modal not found!');
+            return;
+        }
+        console.log('[showTripleWinEffect] case-modal found');
+        
+        var roulettes = ['roulette1', 'roulette2', 'roulette3'];
+        var winningCards = [];
+        
+        // Apply win effects to all 3 winning cards
+        roulettes.forEach(function(rouletteId, index) {
+            var roulette = document.getElementById(rouletteId);
+            console.log('[showTripleWinEffect] Roulette', rouletteId, 'found:', !!roulette, 'children:', roulette ? roulette.children.length : 0);
+            if (!roulette) return;
+            
+            var cards = Array.from(roulette.children);
+            // The winning card is at position 45 (index 45)
+            var winningCard = cards[45];
+            console.log('[showTripleWinEffect] Card at index 45:', winningCard ? winningCard.className : 'NOT FOUND', 'total cards:', cards.length);
+            
+            if (winningCard) {
+                var itemColor = wonSkins[index].rarityColor || '#ffd700';
+                var itemRarity = wonSkins[index].rarity || 'consumer';
+                
+                console.log('[showTripleWinEffect] Applying styles to card at index', index, 'color:', itemColor);
+                
+                // Force reflow to ensure styles apply
+                winningCard.style.cssText = '';
+                void winningCard.offsetHeight;
+                
+                // Apply winning animation - EXACTLY same as single roulette
+                winningCard.classList.add('winning-card');
+                winningCard.style.cssText = 'background:linear-gradient(145deg, #1a1d29 0%, #0f1119 100%) !important;border:3px solid ' + itemColor + ' !important;border-radius:12px !important;box-shadow:0 0 60px ' + itemColor + '80, 0 10px 30px rgba(0,0,0,0.5) !important;transform:scale(1.3) !important;z-index:100 !important;position:relative !important;transition:all 0.3s ease !important;';
+                
+                // Force another reflow
+                void winningCard.offsetHeight;
+                
+                console.log('[showTripleWinEffect] Styles applied:', winningCard.style.cssText);
+                
+                // Add glow effect with pointer-events none
+                var glow = document.createElement('div');
+                glow.className = 'win-glow';
+                glow.style.cssText = 'position:absolute;width:150px;height:150px;background:radial-gradient(circle, ' + itemColor + '60 0%, transparent 70%);border-radius:50%;z-index:99;animation:pulseGlow 1.5s ease-in-out infinite;pointer-events:none;left:50%;top:50%;transform:translate(-50%, -50%);';
+                winningCard.appendChild(glow);
+                
+                // Store for cleanup with full item data
+                winningCards.push({
+                    card: winningCard, 
+                    roulette: roulette, 
+                    rarity: itemRarity, 
+                    color: itemColor,
+                    skin: wonSkins[index]
+                });
+                
+                // Log for debugging
+                console.log('[Triple Win] Item ' + (index + 1) + ':', wonSkins[index].name, 'Rarity:', itemRarity, 'Card classes:', winningCard.className);
+            } else {
+                console.log('[showTripleWinEffect] WARNING: No winning card found at index 45 for roulette', rouletteId);
+            }
+        });
+        
+        console.log('[showTripleWinEffect] Total winning cards found:', winningCards.length);
+        
+        // Shoot confetti for each winning item individually (same logic as single roulette)
+        winningCards.forEach(function(item, index) {
+            var highTiers = ['epic', 'legendary', 'mythic', 'rare'];
+            if (highTiers.indexOf(item.skin.rarity) !== -1) {
+                console.log('[Triple Confetti] Shooting confetti for item ' + (index + 1) + ' - rarity:', item.skin.rarity);
+                shootConfettiForItem(item.roulette, item.skin);
+            }
+        });
+        
+        // Change button to Girar Novamente
+        openBtn.innerHTML = '<i class="fas fa-redo" style="margin-right:8px;"></i>Girar Novamente';
+        openBtn.style.background = 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)';
+        openBtn.disabled = false;
+        openBtn.onclick = function() {
+            // Remove winning effects from all cards
+            winningCards.forEach(function(item) {
+                if (item.card) {
+                    item.card.classList.remove('winning-card');
+                    item.card.style.cssText = '';
+                    var oldGlow = item.card.querySelector('.win-glow');
+                    if (oldGlow) oldGlow.remove();
+                }
+                
+                // Reset roulette position
+                if (item.roulette) {
+                    item.roulette.style.transition = 'none';
+                    item.roulette.style.transform = 'translateX(0)';
+                }
+            });
+            
+            // Reset button
+            openBtn.innerHTML = trickOpenState ? '<i class="fas fa-layer-group"></i> OPEN 3x' : '<i class="fas fa-key"></i> Girar';
+            openBtn.style.background = '';
+            
+            // Regenerate cards
+            generateRoulette();
+            
+            // Spin automatically
+            setTimeout(function() {
+                wHandle.spinRoulette();
+            }, 100);
+        };
+    }
+    
+    // Confetti for specific item (same logic as single roulette)
+    function shootConfettiForItem(roulette, item) {
+        // Only show confetti for epic, legendary, or higher rarities (same as single)
+        var highTiers = ['epic', 'legendary', 'mythic', 'rare'];
+        if (highTiers.indexOf(item.rarity) === -1) return;
+        
+        var itemColor = item.rarityColor || '#ffd700';
+        var colors = ['#ffd700', '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#dfe6e9', '#74b9ff', '#ff9ff3', '#54a0ff'];
+        var container = document.body;
+        
+        // Get roulette container position for corner spawning
+        var rouletteRect = roulette.parentElement.getBoundingClientRect();
+        var corners = [
+            { x: rouletteRect.left, y: rouletteRect.top },
+            { x: rouletteRect.right, y: rouletteRect.top },
+            { x: rouletteRect.left, y: rouletteRect.bottom },
+            { x: rouletteRect.right, y: rouletteRect.bottom }
+        ];
+        
+        var confettiPerCorner = 15;
+        
+        for (var corner = 0; corner < 4; corner++) {
+            for (var i = 0; i < confettiPerCorner; i++) {
+                (function(cornerIndex, index) {
+                    setTimeout(function() {
+                        var confetti = document.createElement('div');
+                        var color = colors[Math.floor(Math.random() * colors.length)];
+                        var size = 8 + Math.random() * 8;
+                        var startPos = corners[cornerIndex];
+                        
+                        confetti.style.cssText = 'position:fixed;width:' + size + 'px;height:' + size + 'px;background:' + color + ';border-radius:50%;pointer-events:none;z-index:100001;left:' + startPos.x + 'px;top:' + startPos.y + 'px;will-change:transform,opacity;';
+                        container.appendChild(confetti);
+                        
+                        // Shoot outward from corner
+                        var angle = (cornerIndex * Math.PI / 2) + (Math.random() - 0.5) * 1.5;
+                        var velocity = 3 + Math.random() * 5;
+                        var vx = Math.cos(angle) * velocity;
+                        var vy = Math.sin(angle) * velocity - 3;
+                        var x = 0;
+                        var y = 0;
+                        var gravity = 0.15;
+                        var opacity = 1;
+                        var rotation = Math.random() * 360;
+                        var rotationSpeed = (Math.random() - 0.5) * 8;
+                        
+                        function animate() {
+                            x += vx;
+                            y += vy;
+                            vy += gravity;
+                            rotation += rotationSpeed;
+                            opacity -= 0.004;
+                            
+                            confetti.style.transform = 'translate(' + x + 'px, ' + y + 'px) rotate(' + rotation + 'deg)';
+                            confetti.style.opacity = opacity;
+                            
+                            if (opacity > 0 && y < window.innerHeight) {
+                                requestAnimationFrame(animate);
+                            } else {
+                                confetti.remove();
+                            }
+                        }
+                        
+                        requestAnimationFrame(animate);
+                    }, (cornerIndex * confettiPerCorner + index) * 40);
+                })(corner, i);
+            }
+        }
+    }
+    
+    // Confetti for specific roulette (used in triple mode)
+    function shootConfettiForRoulette(roulette, itemColor) {
+        var colors = ['#ffd700', '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#dfe6e9', '#74b9ff', '#ff9ff3', '#54a0ff'];
+        var container = document.body;
+        
+        var rouletteRect = roulette.parentElement.getBoundingClientRect();
+        var corners = [
+            { x: rouletteRect.left, y: rouletteRect.top },
+            { x: rouletteRect.right, y: rouletteRect.top },
+            { x: rouletteRect.left, y: rouletteRect.bottom },
+            { x: rouletteRect.right, y: rouletteRect.bottom }
+        ];
+        
+        var confettiPerCorner = 10; // Less confetti per roulette in triple mode
+        
+        for (var corner = 0; corner < 4; corner++) {
+            for (var i = 0; i < confettiPerCorner; i++) {
+                (function(cornerIndex, index) {
+                    setTimeout(function() {
+                        var confetti = document.createElement('div');
+                        var color = colors[Math.floor(Math.random() * colors.length)];
+                        var size = 8 + Math.random() * 8;
+                        var startPos = corners[cornerIndex];
+                        
+                        confetti.style.cssText = 'position:fixed;width:' + size + 'px;height:' + size + 'px;background:' + color + ';border-radius:50%;pointer-events:none;z-index:100001;left:' + startPos.x + 'px;top:' + startPos.y + 'px;will-change:transform,opacity;';
+                        container.appendChild(confetti);
+                        
+                        var angle = (cornerIndex * Math.PI / 2) + (Math.random() - 0.5) * 1.5;
+                        var velocity = 3 + Math.random() * 5;
+                        var vx = Math.cos(angle) * velocity;
+                        var vy = Math.sin(angle) * velocity - 3;
+                        var x = 0;
+                        var y = 0;
+                        var gravity = 0.15;
+                        var opacity = 1;
+                        var rotation = Math.random() * 360;
+                        var rotationSpeed = (Math.random() - 0.5) * 8;
+                        
+                        function animate() {
+                            x += vx;
+                            y += vy;
+                            vy += gravity;
+                            rotation += rotationSpeed;
+                            opacity -= 0.004;
+                            
+                            confetti.style.transform = 'translate(' + x + 'px, ' + y + 'px) rotate(' + rotation + 'deg)';
+                            confetti.style.opacity = opacity;
+                            
+                            if (opacity > 0 && y < window.innerHeight) {
+                                requestAnimationFrame(animate);
+                            } else {
+                                confetti.remove();
+                            }
+                        }
+                        
+                        requestAnimationFrame(animate);
+                    }, (cornerIndex * confettiPerCorner + index) * 40);
+                })(corner, i);
+            }
+        }
+    }
+
+    // Inventory management functions
+    function addToInventory(item) {
+        // Get existing inventory or create empty array
+        var inventory = JSON.parse(wHandle.localStorage.getItem('davos_inventory') || '[]');
+        
+        // Add item with timestamp
+        var inventoryItem = {
+            id: Date.now(),
+            name: item.name,
+            weapon: item.weapon,
+            icon: item.icon,
+            rarity: item.rarity,
+            rarityColor: item.rarityColor,
+            obtainedAt: new Date().toISOString()
+        };
+        
+        inventory.push(inventoryItem);
+        
+        // Save back to localStorage
+        wHandle.localStorage.setItem('davos_inventory', JSON.stringify(inventory));
+        
+        console.log('[Inventory] Item added:', inventoryItem);
+    }
+    
+    function showInventoryNotification(item) {
+        // Create notification element
+        var notification = document.createElement('div');
+        notification.className = 'inventory-notification';
+        notification.innerHTML = 
+            '<i class="fas ' + item.icon + '"></i>' +
+            '<span>Item adicionado ao inventário!</span>';
+        
+        notification.style.cssText = 'position:fixed;top:20px;right:20px;background:linear-gradient(135deg, ' + item.rarityColor + ' 0%, #1a1d29 100%);color:white;padding:12px 20px;border-radius:8px;box-shadow:0 4px 15px rgba(0,0,0,0.3);z-index:100002;display:flex;align-items:center;gap:10px;font-size:14px;animation:slideIn 0.3s ease;';
+        
+        document.body.appendChild(notification);
+        
+        // Remove after 3 seconds
+        setTimeout(function() {
+            notification.style.animation = 'slideOut 0.3s ease';
+            setTimeout(function() {
+                notification.remove();
+            }, 300);
+        }, 3000);
+    }
+    
+    function getInventory() {
+        return JSON.parse(wHandle.localStorage.getItem('davos_inventory') || '[]');
     }
 
     wHandle.spinRoulette = function() {
         if (isSpinning) return;
         
-        var roulette = document.getElementById('roulette');
         var openBtn = document.getElementById('openBtn');
         
-        if (!roulette || !openBtn) return;
-        
-        // Verificar se há cards na roleta - se não houver, regenerar primeiro
-        if (roulette.children.length === 0) {
-            console.log('Roulette vazia - regenerando cards antes do spin');
-            // Chamar generateRoulette ou regenerar diretamente
-            var skins = [];
-            for (var i = 0; i < 50; i++) {
-                skins.push(generateRandomSkin());
-            }
-            roulette.innerHTML = skins.map(function(skin) {
-                return '<div class="skin-card ' + skin.rarity + '">' +
-                    '<i class="fas ' + skin.icon + '" style="color: ' + skin.rarityColor + '"></i>' +
-                    '<span class="skin-name">' + skin.name + '</span>' +
-                    '<span class="skin-weapon">' + skin.weapon + '</span>' +
-                '</div>';
-            }).join('');
-        }
+        if (!openBtn) return;
         
         isSpinning = true;
         openBtn.disabled = true;
         openBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> OPENING...';
         
-        // Generate winning skin
-        var wonSkin = generateRandomSkin();
-        
-        var cardWidth = 110; // 100px card + 10px gap
-        var containerWidth = roulette.parentElement.offsetWidth;
-        var centerOffset = containerWidth / 2 - cardWidth / 2;
-        
-        // Take first 45 cards
-        var allCards = Array.from(roulette.children).slice(0, 45);
-        
-        // Se ainda não houver cards suficientes, criar alguns genéricos
-        while (allCards.length < 45) {
-            var genericSkin = generateRandomSkin();
-            var genericCard = document.createElement('div');
-            genericCard.className = 'skin-card ' + genericSkin.rarity;
-            genericCard.innerHTML = 
-                '<i class="fas ' + genericSkin.icon + '" style="color: ' + genericSkin.rarityColor + '"></i>' +
-                '<span class="skin-name">' + genericSkin.name + '</span>' +
-                '<span class="skin-weapon">' + genericSkin.weapon + '</span>';
-            allCards.push(genericCard);
-        }
-        
-        // Create winning card
-        var winningCard = document.createElement('div');
-        winningCard.className = 'skin-card ' + wonSkin.rarity;
-        winningCard.innerHTML = 
-            '<i class="fas ' + wonSkin.icon + '" style="color: ' + wonSkin.rarityColor + '"></i>' +
-            '<span class="skin-name">' + wonSkin.name + '</span>' +
-            '<span class="skin-weapon">' + wonSkin.weapon + '</span>';
-        allCards.push(winningCard);
-        
-        // Add 5 more random cards after
-        for (var i = 0; i < 5; i++) {
-            var skin = generateRandomSkin();
-            var card = document.createElement('div');
-            card.className = 'skin-card ' + skin.rarity;
-            card.innerHTML = 
-                '<i class="fas ' + skin.icon + '" style="color: ' + skin.rarityColor + '"></i>' +
-                '<span class="skin-name">' + skin.name + '</span>' +
-                '<span class="skin-weapon">' + skin.weapon + '</span>';
-            allCards.push(card);
-        }
-        
-        // Clear and rebuild roulette
-        roulette.innerHTML = '';
-        allCards.forEach(function(card) {
-            roulette.appendChild(card);
-        });
-        
-        // Calculate target position to land on card 45
-        var targetPosition = 45 * cardWidth - centerOffset;
-        
-        // Spin animation
-        setTimeout(function() {
-            roulette.style.transition = 'transform 4s cubic-bezier(0.15, 0.9, 0.34, 1)';
-            roulette.style.transform = 'translateX(-' + targetPosition + 'px)';
-        }, 50);
-        
-        // After spin completes
-        setTimeout(function() {
-            isSpinning = false;
-            openBtn.disabled = false;
-            openBtn.innerHTML = '<i class="fas fa-key"></i> OPEN CASE';
+        if (trickOpenState) {
+            // Trick Open - spin 3 roulettes simultaneously
+            var wonSkins = [];
+            var roulettes = ['roulette1', 'roulette2', 'roulette3'];
             
-            // Show 3D win effect instead of alert
-            showCaseWinEffect(wonSkin);
+            // Generate 3 winning skins and save to inventory immediately
+            for (var i = 0; i < 3; i++) {
+                var skin = generateRandomSkin();
+                wonSkins.push(skin);
+                addToInventory(skin);
+            }
             
-        }, 4050);
+            // Spin each roulette
+            roulettes.forEach(function(rouletteId, index) {
+                var roulette = document.getElementById(rouletteId);
+                if (!roulette) return;
+                
+                // Ensure cards exist
+                if (roulette.children.length === 0) {
+                    generateSingleRoulette(rouletteId);
+                }
+                
+                var cardWidth = 95; // Smaller cards for triple roulette
+                var containerWidth = roulette.parentElement.offsetWidth;
+                var allCards = Array.from(roulette.children).slice(0, 45);
+                
+                // Fill if needed
+                while (allCards.length < 45) {
+                    var genericSkin = generateRandomSkin();
+                    var genericCard = document.createElement('div');
+                    genericCard.className = 'skin-card ' + genericSkin.rarity;
+                    genericCard.innerHTML = 
+                        '<i class="fas ' + genericSkin.icon + '" style="color: ' + genericSkin.rarityColor + '"></i>' +
+                        '<span class="skin-name">' + genericSkin.name + '</span>' +
+                        '<span class="skin-weapon">' + genericSkin.weapon + '</span>';
+                    allCards.push(genericCard);
+                }
+                
+                // Create winning card for this roulette
+                var winningCard = document.createElement('div');
+                winningCard.className = 'skin-card ' + wonSkins[index].rarity;
+                winningCard.innerHTML = 
+                    '<i class="fas ' + wonSkins[index].icon + '" style="color: ' + wonSkins[index].rarityColor + '"></i>' +
+                    '<span class="skin-name">' + wonSkins[index].name + '</span>' +
+                    '<span class="skin-weapon">' + wonSkins[index].weapon + '</span>';
+                allCards.push(winningCard);
+                
+                // Add 5 more cards after
+                for (var j = 0; j < 5; j++) {
+                    var extraSkin = generateRandomSkin();
+                    var extraCard = document.createElement('div');
+                    extraCard.className = 'skin-card ' + extraSkin.rarity;
+                    extraCard.innerHTML = 
+                        '<i class="fas ' + extraSkin.icon + '" style="color: ' + extraSkin.rarityColor + '"></i>' +
+                        '<span class="skin-name">' + extraSkin.name + '</span>' +
+                        '<span class="skin-weapon">' + extraSkin.weapon + '</span>';
+                    allCards.push(extraCard);
+                }
+                
+                // Clear and rebuild
+                roulette.innerHTML = '';
+                allCards.forEach(function(card) {
+                    roulette.appendChild(card);
+                });
+                
+                // Calculate target position - center card 45 under the arrow
+                var containerWidth = roulette.parentElement.offsetWidth;
+                var padding = 40; // padding from CSS
+                var contentWidth = containerWidth - (padding * 2);
+                var arrowPosition = contentWidth / 2; // Center of content area (arrow position)
+                var cardStartPosition = 45 * cardWidth; // Start of card 45
+                var cardCenter = cardWidth / 2; // Center offset within card
+                var targetPosition = cardStartPosition - arrowPosition + cardCenter;
+                
+                // Spin with slight delay between each for visual effect
+                setTimeout(function() {
+                    roulette.style.transition = 'transform 4s cubic-bezier(0.15, 0.9, 0.34, 1)';
+                    roulette.style.transform = 'translateX(-' + targetPosition + 'px)';
+                }, 50 + (index * 100)); // 100ms stagger between roulettes
+            });
+            
+            // After all spins complete
+            setTimeout(function() {
+                console.log('[Triple Roulette] Spin complete, calling showTripleWinEffect with', wonSkins.length, 'skins');
+                isSpinning = false;
+                openBtn.disabled = false;
+                openBtn.innerHTML = '<i class="fas fa-layer-group"></i> OPEN 3x';
+                
+                // Show win effects for all 3 items
+                showTripleWinEffect(wonSkins);
+            }, 4250); // Slightly longer to account for stagger
+            
+        } else {
+            // Single roulette spin (original logic) - use roulette2 as main
+            var roulette = document.getElementById('roulette2');
+            
+            if (!roulette) return;
+            
+            // Verificar se há cards na roleta
+            if (roulette.children.length === 0) {
+                console.log('Roulette vazia - regenerando cards antes do spin');
+                var skins = [];
+                for (var i = 0; i < 50; i++) {
+                    skins.push(generateRandomSkin());
+                }
+                roulette.innerHTML = skins.map(function(skin) {
+                    return '<div class="skin-card ' + skin.rarity + '">' +
+                        '<i class="fas ' + skin.icon + '" style="color: ' + skin.rarityColor + '"></i>' +
+                        '<span class="skin-name">' + skin.name + '</span>' +
+                        '<span class="skin-weapon">' + skin.weapon + '</span>' +
+                    '</div>';
+                }).join('');
+            }
+            
+            // Generate winning skin
+            var wonSkin = generateRandomSkin();
+            
+            // Save to inventory immediately
+            addToInventory(wonSkin);
+            
+            var cardWidth = 110;
+            var containerWidth = roulette.parentElement.offsetWidth;
+            var allCards = Array.from(roulette.children).slice(0, 45);
+            
+            while (allCards.length < 45) {
+                var genericSkin = generateRandomSkin();
+                var genericCard = document.createElement('div');
+                genericCard.className = 'skin-card ' + genericSkin.rarity;
+                genericCard.innerHTML = 
+                    '<i class="fas ' + genericSkin.icon + '" style="color: ' + genericSkin.rarityColor + '"></i>' +
+                    '<span class="skin-name">' + genericSkin.name + '</span>' +
+                    '<span class="skin-weapon">' + genericSkin.weapon + '</span>';
+                allCards.push(genericCard);
+            }
+            
+            // Create winning card
+            var winningCard = document.createElement('div');
+            winningCard.className = 'skin-card ' + wonSkin.rarity;
+            winningCard.innerHTML = 
+                '<i class="fas ' + wonSkin.icon + '" style="color: ' + wonSkin.rarityColor + '"></i>' +
+                '<span class="skin-name">' + wonSkin.name + '</span>' +
+                '<span class="skin-weapon">' + wonSkin.weapon + '</span>';
+            allCards.push(winningCard);
+            
+            // Add 5 more cards after
+            for (var i = 0; i < 5; i++) {
+                var skin = generateRandomSkin();
+                var card = document.createElement('div');
+                card.className = 'skin-card ' + skin.rarity;
+                card.innerHTML = 
+                    '<i class="fas ' + skin.icon + '" style="color: ' + skin.rarityColor + '"></i>' +
+                    '<span class="skin-name">' + skin.name + '</span>' +
+                    '<span class="skin-weapon">' + skin.weapon + '</span>';
+                allCards.push(card);
+            }
+            
+            // Clear and rebuild
+            roulette.innerHTML = '';
+            allCards.forEach(function(card) {
+                roulette.appendChild(card);
+            });
+            
+            // Calculate target position - center card 45 under the arrow
+            var containerWidth = roulette.parentElement.offsetWidth;
+            var padding = 40; // padding from CSS
+            var contentWidth = containerWidth - (padding * 2);
+            var arrowPosition = contentWidth / 2; // Center of content area (arrow position)
+            var cardStartPosition = 45 * cardWidth; // Start of card 45
+            var cardCenter = cardWidth / 2; // Center offset within card
+            var targetPosition = cardStartPosition - arrowPosition + cardCenter;
+            
+            // Spin
+            setTimeout(function() {
+                roulette.style.transition = 'transform 4s cubic-bezier(0.15, 0.9, 0.34, 1)';
+                roulette.style.transform = 'translateX(-' + targetPosition + 'px)';
+            }, 50);
+            
+            // After spin completes
+            setTimeout(function() {
+                isSpinning = false;
+                openBtn.disabled = false;
+                openBtn.innerHTML = '<i class="fas fa-key"></i> Girar';
+                
+                showCaseWinEffect(wonSkin);
+            }, 4050);
+        }
     };
 
     // Close case modal on click outside
@@ -1738,23 +2294,45 @@
             // Apply saved theme on load for menu cards
             var darkThemeValue = wHandle.localStorage.getItem("checkbox-3");
             var canvas = document.getElementById('canvas');
-            // Por padrão, light mode está ativado (se não houver valor salvo)
+            
+            // DEBUG: Mostrar valor atual do tema
+            console.log('=== THEME DEBUG ===');
+            console.log('darkThemeValue from localStorage:', darkThemeValue);
+            console.log('body classes before:', document.body.className);
+            
+            // Por padrao, tema claro esta ativado (se nao houver valor salvo OU valor for invalido)
             if (darkThemeValue === "true") {
+                // Tema escuro
+                console.log('Aplicando tema ESCURO');
                 document.body.classList.remove('light-theme');
+                document.body.classList.add('dark-theme');
                 document.body.classList.remove('game-active');
                 document.body.style.background = '#0a0a0a'; // Fundo preto
                 showDarkTheme = true;
                 if (canvas) canvas.style.background = '#111111';
             } else {
+                // Tema claro (padrao) - inclui quando darkThemeValue é null, "false", ou qualquer outro valor
+                console.log('Aplicando tema CLARO (padrao)');
+                document.body.classList.remove('dark-theme');
                 document.body.classList.add('light-theme');
                 document.body.classList.remove('game-active');
                 document.body.style.background = '#e8e8e8'; // Fundo claro
                 showDarkTheme = false;
                 if (canvas) canvas.style.background = '#F2FBFF';
-                // Salvar preferência padrão se não existir
-                if (darkThemeValue === null) {
+                
+                // Sempre salvar como false se não for explicitamente "true"
+                if (darkThemeValue !== "false") {
+                    console.log('Salvando preferencia padrao (false) no localStorage');
                     wHandle.localStorage.setItem("checkbox-3", "false");
                 }
+            }
+            
+            console.log('body classes after:', document.body.className);
+            console.log('===================');
+            
+            // Iniciar loop de animação do grid para o menu
+            if (wHandle.requestAnimationFrame) {
+                wHandle.requestAnimationFrame(redrawGameScene);
             }
         });
         if (null == wHandle.localStorage.AB8) {

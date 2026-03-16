@@ -1,7 +1,7 @@
 {
   "name": "davos-game",
   "version": "1.0.0",
-  "description": "Davos.io - Open source Agar.io clone",
+  "description": "Davos.io - Open source Davos.io clone",
   "main": "server/src/index.js",
   "scripts": {
     "start": "node server/src/index.js",

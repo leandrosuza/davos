@@ -159,12 +159,13 @@
 }
 
 .modal-btn-secondary {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--stat-bg);
     color: var(--card-text);
+    border: 1px solid var(--border-color);
 }
 
 .modal-btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background: var(--stat-bg-hover);
 }
 
 /* Skins Gallery Specific */
@@ -178,7 +179,7 @@
 .skin-item {
     width: 70px;
     height: 70px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid var(--border-color);
     border-radius: 50%;
     cursor: pointer;
     transition: all 0.2s;
@@ -207,7 +208,7 @@
 .loader {
     width: 40px;
     height: 40px;
-    border: 3px solid rgba(255, 255, 255, 0.1);
+    border: 3px solid var(--border-color);
     border-top: 3px solid #ff8c00;
     border-radius: 50%;
     animation: spin 1s linear infinite;
@@ -257,7 +258,7 @@
     align-items: center;
     justify-content: center;
     font-size: 28px;
-    color: #fff;
+    color: #ffffff;
 }
 
 .clan-details h3 {
@@ -267,8 +268,8 @@
 }
 
 .clan-tag {
-    background: rgba(255, 255, 255, 0.1);
-    color: #9ca3af;
+    background: var(--stat-bg);
+    color: var(--card-text-secondary);
     padding: 3px 8px;
     border-radius: 4px;
     font-size: 12px;
@@ -280,7 +281,7 @@
     gap: 15px;
     margin-top: 8px;
     font-size: 13px;
-    color: #9ca3af;
+    color: var(--card-text-secondary);
 }
 
 .clan-stats span {
@@ -293,7 +294,7 @@
     display: flex;
     gap: 5px;
     margin-bottom: 15px;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 2px solid var(--border-color);
     padding-bottom: 10px;
 }
 
@@ -304,19 +305,19 @@
     cursor: pointer;
     font-family: 'Ubuntu', sans-serif;
     font-size: 13px;
-    color: #9ca3af;
+    color: var(--tab-inactive);
     border-radius: 6px;
     transition: all 0.2s;
 }
 
 .clan-tab:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--stat-bg-hover);
     color: var(--card-text);
 }
 
 .clan-tab.active {
     background: #ff8c00;
-    color: #fff;
+    color: #ffffff;
 }
 
 .member-list {
@@ -329,7 +330,7 @@
     align-items: center;
     gap: 12px;
     padding: 10px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .member-rank {
@@ -344,23 +345,23 @@
 
 .member-rank.leader {
     background: #ffd700;
-    color: #fff;
+    color: #0a0a0a;
 }
 
 .member-rank.officer {
     background: #c0c0c0;
-    color: #fff;
+    color: #0a0a0a;
 }
 
 .member-name {
     flex: 1;
     font-size: 14px;
-    color: #fff;
+    color: var(--card-text);
 }
 
 .member-score {
     font-size: 13px;
-    color: #9ca3af;
+    color: var(--card-text-secondary);
     font-weight: 600;
 }
 
@@ -369,7 +370,7 @@
     gap: 10px;
     margin-top: 15px;
     padding-top: 15px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid var(--border-color);
 }
 
 .clan-btn {
@@ -389,12 +390,13 @@
 
 .clan-btn.btn-primary {
     background: linear-gradient(135deg, #00d4ff 0%, #0077aa 100%);
-    color: #fff;
+    color: #ffffff;
 }
 
 .clan-btn.btn-secondary {
-    background: rgba(255, 255, 255, 0.1);
-    color: #fff;
+    background: var(--stat-bg);
+    color: var(--card-text);
+    border: 1px solid var(--border-color);
 }
 
 /* Updates Modal Styles */
@@ -402,15 +404,16 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: linear-gradient(135deg, #1a1d29 0%, #0f1119 100%);
+    background: var(--stat-bg);
     padding: 12px 15px;
     border-radius: 10px;
     margin-bottom: 15px;
+    border: 1px solid var(--border-color);
 }
 
 .version-badge {
     background: #00d4ff;
-    color: #fff;
+    color: #ffffff;
     padding: 4px 10px;
     border-radius: 12px;
     font-size: 13px;
@@ -418,7 +421,7 @@
 }
 
 .version-date {
-    color: #9ca3af;
+    color: var(--card-text-secondary);
     font-size: 13px;
     display: flex;
     align-items: center;
@@ -434,7 +437,7 @@
     display: flex;
     gap: 12px;
     padding: 12px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .update-item:last-child {
@@ -481,13 +484,13 @@
 
 .update-content h4 {
     font-size: 14px;
-    color: #fff;
+    color: var(--card-text);
     margin: 0 0 5px 0;
 }
 
 .update-content p {
     font-size: 13px;
-    color: #9ca3af;
+    color: var(--card-text-secondary);
     margin: 0 0 8px 0;
     line-height: 1.4;
 }
@@ -503,18 +506,18 @@
 
 .update-item.featured .update-tag {
     background: #00d4ff;
-    color: #fff;
+    color: #ffffff;
 }
 
 .update-item:not(.featured) .update-tag {
-    background: rgba(255, 255, 255, 0.1);
-    color: #9ca3af;
+    background: var(--stat-bg);
+    color: var(--card-text-secondary);
 }
 
 .patch-notes {
     margin-top: 15px;
     padding-top: 15px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid var(--border-color);
     text-align: center;
 }
 
@@ -542,7 +545,7 @@
     justify-content: center;
     gap: 10px;
     padding: 15px 20px;
-    background: linear-gradient(145deg, #1a1d29, #0f1119);
+    background: var(--stat-bg);
     border-radius: 8px;
     margin-bottom: 20px;
     border: 1px solid rgba(255, 215, 0, 0.3);
@@ -561,7 +564,7 @@
 
 .currency-label {
     font-size: 14px;
-    color: #9ca3af;
+    color: var(--card-text-secondary);
     margin-left: 5px;
 }
 
@@ -574,10 +577,10 @@
 .shop-tab {
     flex: 1;
     padding: 10px 15px;
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--stat-bg);
+    border: 1px solid var(--border-color);
     border-radius: 6px;
-    color: #9ca3af;
+    color: var(--tab-inactive);
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
@@ -585,14 +588,14 @@
 }
 
 .shop-tab:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: #fff;
+    background: var(--stat-bg-hover);
+    color: var(--card-text);
 }
 
 .shop-tab.active {
     background: linear-gradient(145deg, #00d4ff, #0099cc);
     border-color: #00d4ff;
-    color: #fff;
+    color: #ffffff;
 }
 
 .shop-grid {
@@ -602,8 +605,8 @@
 }
 
 .shop-item {
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--stat-bg);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     padding: 15px;
     text-align: center;
@@ -623,7 +626,7 @@
 .item-name {
     font-size: 13px;
     font-weight: 600;
-    color: #fff;
+    color: var(--card-text);
     margin-bottom: 8px;
 }
 
@@ -643,7 +646,7 @@
     background: linear-gradient(145deg, #00d4ff, #0099cc);
     border: none;
     border-radius: 4px;
-    color: #fff;
+    color: #ffffff;
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
@@ -662,8 +665,14 @@
 /* Battle Pass Modal Styles */
 .battlepass-modal-content {
     max-width: 400px;
-    background: linear-gradient(145deg, #1a1d29 0%, #0f1119 100%);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+}
+
+/* Título do modal de battlepass usa cor do tema */
+.battlepass-modal-content .modal-title,
+.battlepass-modal-content .modal-header h2 {
+    color: var(--card-text) !important;
 }
 
 .battlepass-body {
@@ -685,7 +694,7 @@
     justify-content: center;
     margin: 0 auto 20px;
     font-size: 36px;
-    color: #fff;
+    color: #ffffff;
     box-shadow: 0 8px 25px rgba(255, 160, 0, 0.3);
 }
 
@@ -697,17 +706,17 @@
 
 .battlepass-body p {
     font-size: 14px;
-    color: #9ca3af;
+    color: var(--card-text-secondary);
     margin: 0 0 25px 0;
     line-height: 1.5;
 }
 
 .bp-preview {
-    background: rgba(0, 0, 0, 0.3);
+    background: var(--stat-bg);
     border-radius: 12px;
     padding: 20px;
     margin-bottom: 20px;
-    border: 1px solid rgba(255, 215, 0, 0.2);
+    border: 1px solid var(--border-color);
 }
 
 .bp-level-preview {
@@ -727,7 +736,7 @@
 .xp-bar-preview {
     flex: 1;
     height: 8px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--border-color);
     border-radius: 4px;
     overflow: hidden;
 }
@@ -740,7 +749,7 @@
 
 .xp-text-preview {
     font-size: 12px;
-    color: #9ca3af;
+    color: var(--card-text-secondary);
     min-width: 90px;
     text-align: right;
 }
@@ -769,19 +778,19 @@
 }
 
 .reward-preview.locked i {
-    background: rgba(255, 255, 255, 0.1);
-    color: #6b7280;
+    background: var(--border-color);
+    color: var(--card-text-secondary);
 }
 
 .reward-preview.premium i {
     background: linear-gradient(135deg, #e91e63 0%, #c2185b 100%);
-    color: #fff;
+    color: #ffffff;
     box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
 }
 
 .reward-preview span {
     font-size: 11px;
-    color: #9ca3af;
+    color: var(--card-text-secondary);
     font-weight: 600;
 }
 
@@ -793,6 +802,12 @@
     border: none;
     box-shadow: 0 10px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
     overflow: hidden;
+}
+
+/* Força título do modal de leaderboard a usar cor do tema */
+.leaderboard-modal-content .modal-title,
+.leaderboard-modal-content .modal-header h2 {
+    color: var(--card-text) !important;
 }
 
 .leaderboard-modal-content .modal-header {
@@ -864,7 +879,7 @@
     width: 85px;
     height: 85px;
     background: linear-gradient(135deg, #ffd700 0%, #ffaa00 100%);
-    color: #fff;
+    color: #ffffff;
     box-shadow: 0 4px 20px rgba(255, 215, 0, 0.4);
     border: 3px solid #ffd700;
 }
@@ -878,7 +893,7 @@
 
 .third-place .podium-avatar {
     background: linear-gradient(135deg, #daa520 0%, #cd7f32 100%);
-    color: #fff;
+    color: #ffffff;
     box-shadow: 0 4px 15px rgba(205, 127, 50, 0.3);
     border: 3px solid #cd7f32;
 }
@@ -1036,6 +1051,12 @@
     animation: modalSlideIn 0.3s ease;
 }
 
+/* Título do modal de cases usa cor do tema */
+.case-modal-content .modal-title,
+.case-modal-content .modal-header h2 {
+    color: var(--card-text) !important;
+}
+
 .case-body {
     padding: 30px;
 }
@@ -1048,20 +1069,40 @@
     gap: 25px;
 }
 
-.roulette-container {
-    position: relative;
+/* Roulette Stack Container - New structure */
+.roulette-stack-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
     width: 100%;
-    height: 140px;
-    background: linear-gradient(180deg, rgba(15, 17, 25, 0.8) 0%, rgba(26, 29, 41, 0.6) 50%, rgba(15, 17, 25, 0.8) 100%);
-    border-radius: 8px;
-    overflow: visible;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 0 40px;
 }
 
-.roulette-container::before,
-.roulette-container::after {
+.roulette-layer {
+    position: relative;
+    width: 100%;
+    height: 160px;
+    background: linear-gradient(180deg, var(--stat-bg) 0%, var(--card-bg) 50%, var(--stat-bg) 100%);
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+/* When trick open is active, show all three */
+.roulette-stack-container.trick-open-active .roulette-layer {
+    display: flex !important;
+}
+
+/* Single roulette mode - only middle visible */
+.roulette-stack-container:not(.trick-open-active) .roulette-layer {
     display: none;
+}
+
+.roulette-stack-container:not(.trick-open-active) #rouletteLayer2 {
+    display: flex !important;
 }
 
 .selector-arrow {
@@ -1080,8 +1121,8 @@
 
 .roulette-wrapper {
     display: flex;
-    gap: 8px;
-    padding: 10px;
+    gap: 10px;
+    padding: 0;
     height: 100%;
     align-items: center;
     min-width: fit-content;
@@ -1093,29 +1134,30 @@
 
 /* Skin Cards - Minimalist */
 .skin-card {
-    min-width: 85px !important;
-    height: 85px !important;
-    background: linear-gradient(145deg, rgba(30, 35, 50, 0.95) 0%, rgba(20, 25, 35, 0.95) 100%) !important;
-    border-radius: 6px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 4px !important;
-    border: 2px solid rgba(255, 255, 255, 0.3) !important;
-    flex-shrink: 0 !important;
+    width: 100px;
+    height: 100px;
+    background: var(--stat-bg);
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    border: 2px solid var(--border-color);
+    flex-shrink: 0;
     transition: all 0.3s ease;
-    visibility: visible !important;
-    opacity: 1 !important;
-    position: relative !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
-    color: white !important;
+    visibility: visible;
+    opacity: 1;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    color: var(--card-text);
+    box-sizing: border-box;
 }
 
 .skin-card:hover {
     transform: translateY(-2px);
-    background: linear-gradient(145deg, rgba(40, 45, 60, 0.95) 0%, rgba(30, 35, 45, 0.95) 100%);
-    border-color: rgba(255, 255, 255, 0.25);
+    background: var(--stat-bg-hover);
+    border-color: rgba(0, 212, 255, 0.5);
 }
 
 .skin-card i {
@@ -1124,23 +1166,23 @@
 }
 
 .skin-name {
-    font-size: 8px !important;
-    font-weight: 600 !important;
-    color: rgba(255, 255, 255, 0.9) !important;
-    text-align: center !important;
-    padding: 0 4px !important;
-    max-width: 75px !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    white-space: nowrap !important;
-    letter-spacing: 0.3px !important;
+    font-size: 8px;
+    font-weight: 600;
+    color: var(--card-text);
+    text-align: center;
+    padding: 0 4px;
+    max-width: 75px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    letter-spacing: 0.3px;
 }
 
 .skin-weapon {
-    font-size: 7px !important;
-    color: rgba(255, 255, 255, 0.5) !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.5px !important;
+    font-size: 7px;
+    color: var(--card-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 /* Win Effect Animations */
@@ -1155,7 +1197,16 @@
 }
 
 .winning-card {
-    transition: all 0.3s ease;
+    transition: all 0.3s ease !important;
+    transform: scale(1.3) !important;
+    z-index: 100 !important;
+    position: relative !important;
+}
+
+/* Ensure winning cards in triple roulette also get proper styling */
+.triple-roulette-container.stacked .skin-card.winning-card {
+    transform: scale(1.3) !important;
+    z-index: 100 !important;
 }
 
 .roulette-won-text {
@@ -1165,32 +1216,32 @@
 /* Skin Rarities - Subtle */
 .skin-card.consumer {
     border-color: rgba(176, 195, 217, 0.5);
-    background: linear-gradient(145deg, rgba(176, 195, 217, 0.2) 0%, rgba(176, 195, 217, 0.1) 100%);
+    background: rgba(176, 195, 217, 0.15);
 }
 
 .skin-card.industrial {
     border-color: rgba(94, 152, 217, 0.5);
-    background: linear-gradient(145deg, rgba(94, 152, 217, 0.2) 0%, rgba(94, 152, 217, 0.1) 100%);
+    background: rgba(94, 152, 217, 0.15);
 }
 
 .skin-card.milspec {
     border-color: rgba(75, 105, 255, 0.5);
-    background: linear-gradient(145deg, rgba(75, 105, 255, 0.2) 0%, rgba(75, 105, 255, 0.1) 100%);
+    background: rgba(75, 105, 255, 0.15);
 }
 
 .skin-card.restricted {
     border-color: rgba(136, 71, 255, 0.5);
-    background: linear-gradient(145deg, rgba(136, 71, 255, 0.2) 0%, rgba(136, 71, 255, 0.1) 100%);
+    background: rgba(136, 71, 255, 0.15);
 }
 
 .skin-card.classified {
     border-color: rgba(211, 44, 230, 0.5);
-    background: linear-gradient(145deg, rgba(211, 44, 230, 0.2) 0%, rgba(211, 44, 230, 0.1) 100%);
+    background: rgba(211, 44, 230, 0.15);
 }
 
 .skin-card.covert {
     border-color: rgba(235, 75, 75, 0.5);
-    background: linear-gradient(145deg, rgba(235, 75, 75, 0.2) 0%, rgba(235, 75, 75, 0.1) 100%);
+    background: rgba(235, 75, 75, 0.15);
 }
 
 /* Open Button - Clean */
@@ -1220,8 +1271,8 @@
 }
 
 .open-btn:disabled {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.3);
+    background: var(--stat-bg);
+    color: var(--card-text-secondary);
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
@@ -1257,6 +1308,12 @@
     animation: modalSlideIn 0.3s ease;
 }
 
+/* Força título do modal de shop a usar cor do tema */
+.shop-modal-content .modal-title,
+.shop-modal-content .modal-header h2 {
+    color: var(--card-text) !important;
+}
+
 /* ============================================
    SETTINGS MODAL - From index.css
    ============================================ */
@@ -1285,6 +1342,12 @@
     max-width: 90%;
     box-shadow: 0 20px 60px rgba(0,0,0,0.5);
     animation: modalSlideIn 0.3s ease;
+}
+
+/* Força título do modal de settings a usar cor do tema */
+.settings-modal-content .modal-title,
+.settings-modal-content .modal-header h2 {
+    color: var(--card-text) !important;
 }
 
 .settings-modal-content .modal-header h2 i {
@@ -1337,6 +1400,12 @@
     overflow: hidden;
     box-shadow: 0 10px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
     animation: modalSlideIn 0.3s ease;
+}
+
+/* Força título do modal de backpack a usar cor do tema */
+.backpack-modal-content .modal-title,
+.backpack-modal-content .modal-header h2 {
+    color: var(--card-text) !important;
 }
 
 .backpack-body {
@@ -1462,5 +1531,311 @@
     background: var(--stat-bg-hover);
     padding: 3px 8px;
     border-radius: 10px;
+}
+
+/* ============================================
+   TRICK OPEN - Triple Roulette Styles
+   ============================================ */
+
+/* Trick Open Toggle - Now in Boosters modal */
+.trick-open-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 15px 20px;
+    background: var(--stat-bg);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.toggle-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--card-text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.toggle-label i {
+    color: #ffd700;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--stat-bg-hover);
+    transition: .3s;
+    border-radius: 26px;
+    border: 2px solid var(--border-color);
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 2px;
+    background-color: var(--card-text);
+    transition: .3s;
+    border-radius: 50%;
+}
+
+.toggle-switch input:checked + .toggle-slider {
+    background-color: rgba(255, 215, 0, 0.3);
+    border-color: #ffd700;
+}
+
+.toggle-switch input:checked + .toggle-slider:before {
+    transform: translateX(24px);
+    background-color: #ffd700;
+}
+
+/* Stacked Triple Roulette - One on top of another */
+.triple-roulette-container.stacked {
+    width: 100%;
+    height: 520px;
+    position: relative;
+}
+
+.triple-roulette-container.stacked .roulette-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    height: 100%;
+}
+
+.triple-roulette-container.stacked .roulette-layer {
+    position: relative;
+    width: 100%;
+    height: 160px;
+    background: linear-gradient(180deg, var(--stat-bg) 0%, var(--card-bg) 50%, var(--stat-bg) 100%);
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+}
+
+.triple-roulette-container.stacked .selector-arrow {
+    top: -2px;
+}
+
+.triple-roulette-container.stacked .roulette-wrapper {
+    width: 100%;
+}
+
+.triple-roulette-container.stacked .skin-card {
+    width: 95px;
+    height: 95px;
+}
+
+.triple-roulette-container.stacked .skin-card i {
+    font-size: 22px;
+}
+
+.triple-roulette-container.stacked .skin-name {
+    font-size: 8px;
+    max-width: 70px;
+}
+
+.triple-roulette-container.stacked .skin-weapon {
+    font-size: 7px;
+}
+
+/* ============================================
+   BOOSTERS PANEL - Side Panel for Roulette
+   ============================================ */
+
+#boosters-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: calc(50% + 450px); /* Position to the right of centered modal (850px/2 + margin) */
+    transform: translateY(-50%);
+    z-index: 10002;
+    width: auto;
+    height: auto;
+    background: transparent;
+}
+
+#boosters-modal.active {
+    display: block;
+    animation: fadeInRight 0.3s ease;
+}
+
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateY(-50%) translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(-50%) translateX(0);
+    }
+}
+
+/* Responsive: Stack below modal on smaller screens */
+@media (max-width: 1100px) {
+    #boosters-modal {
+        top: auto;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    #boosters-modal.active {
+        animation: fadeInUp 0.3s ease;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateX(-50%) translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    }
+    
+    .boosters-modal-content {
+        width: 280px;
+    }
+}
+
+.boosters-modal-content {
+    background: var(--card-bg, #1a1a2e);
+    border-radius: 16px;
+    width: 200px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    border: 1px solid var(--border-color);
+}
+
+.boosters-modal-content .modal-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.boosters-modal-content .modal-header h2 {
+    font-size: 16px;
+    margin: 0;
+    color: var(--card-text) !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.boosters-modal-content .modal-header h2 i {
+    color: #ffd700;
+}
+
+.boosters-modal-content .modal-close {
+    display: none;
+}
+
+.boosters-body {
+    padding: 20px;
+}
+
+.boosters-body .trick-open-toggle {
+    flex-direction: column;
+    gap: 12px;
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+/* Trick Open Button Style */
+.trick-open-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 15px;
+    background: var(--stat-bg);
+    border-radius: 12px;
+    border: 2px solid var(--border-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.trick-open-btn:hover {
+    border-color: #ffd700;
+    background: rgba(255, 215, 0, 0.1);
+}
+
+.trick-open-btn.active {
+    border-color: #ffd700;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 183, 0, 0.1) 100%);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+}
+
+.trick-open-btn .btn-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--card-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: var(--card-text);
+    border: 2px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.trick-open-btn.active .btn-icon {
+    background: linear-gradient(135deg, #ffd700 0%, #ffb700 100%);
+    color: #0a0a0a;
+    border-color: #ffd700;
+}
+
+.trick-open-btn .btn-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--card-text);
+    text-align: center;
+}
+
+.trick-open-btn.active .btn-label {
+    color: #ffd700;
+}
+
+.trick-open-btn .btn-status {
+    font-size: 10px;
+    color: var(--card-text-secondary);
+    text-transform: uppercase;
+}
+
+.trick-open-btn.active .btn-status {
+    color: #22c55e;
+}
+
+.booster-description {
+    display: none;
 }
 

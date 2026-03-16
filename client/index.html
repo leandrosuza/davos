@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Eat cells smaller than you and don't get eaten by the bigger ones, as an MMO">
-    <meta name="keywords" content="agario, agar, io, cell, cells, virus, bacteria, blob, game, games, web game, html5, fun, flash">
+    <meta name="keywords" content="davosio, davos, io, cell, cells, virus, bacteria, blob, game, games, web game, html5, fun, flash">
     <meta name="robots" content="index, follow">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -22,6 +22,16 @@
     <link href="assets/css/modals.css" rel="stylesheet">
     <link href="assets/css/chat.css" rel="stylesheet">
     <link href="assets/css/responsive.css" rel="stylesheet">
+    
+    <script>
+        // Aplicar tema imediatamente antes de renderizar para evitar flash branco
+        (function() {
+            var darkTheme = localStorage.getItem('checkbox-3');
+            if (darkTheme === 'true') {
+                document.documentElement.className = 'dark-theme';
+            }
+        })();
+    </script>
     
     <style>
         /* Sobrescrever TODOS os estilos padrão do navegador */
@@ -73,29 +83,29 @@
                             <div class="avatar-img"><i class="fas fa-user-slash"></i></div>
                         </div>
                         <div class="guest-info">
-                            <h3 class="profile-name">Visitante</h3>
-                            <span class="profile-handle">Não logado</span>
+                            <h3 class="profile-name" data-i18n="profile.guest">Visitante</h3>
+                            <span class="profile-handle" data-i18n="profile.notLoggedIn">Não logado</span>
                         </div>
                     </div>
                     
                     <div class="auth-tabs">
-                        <button class="auth-tab active" onclick="switchAuthTab('login', this)">Entrar</button>
-                        <button class="auth-tab" onclick="switchAuthTab('register', this)">Registrar</button>
+                        <button type="button" class="auth-tab active" onclick="switchAuthTab('login', this)" data-i18n="profile.login">Entrar</button>
+                        <button type="button" class="auth-tab" onclick="switchAuthTab('register', this)" data-i18n="profile.register">Registrar</button>
                     </div>
                     
                     <!-- Tab Login -->
                     <div id="auth-tab-login" class="auth-tab-content active">
                         <div class="auth-form">
                             <div class="form-group">
-                                <label><i class="fas fa-envelope"></i> Email</label>
+                                <label><i class="fas fa-envelope"></i> <span data-i18n="profile.email">Email</span></label>
                                 <input type="email" id="login-email" placeholder="seu@email.com">
                             </div>
                             <div class="form-group">
-                                <label><i class="fas fa-lock"></i> Senha</label>
+                                <label><i class="fas fa-lock"></i> <span data-i18n="profile.password">Senha</span></label>
                                 <input type="password" id="login-password" placeholder="••••••••">
                             </div>
-                            <button class="auth-btn login-btn" onclick="handleLogin()">
-                                <i class="fas fa-sign-in-alt"></i> Entrar
+                            <button type="button" class="auth-btn login-btn" onclick="handleLogin()">
+                                <i class="fas fa-sign-in-alt"></i> <span data-i18n="profile.enter">Entrar</span>
                             </button>
                         </div>
                     </div>
@@ -104,29 +114,29 @@
                     <div id="auth-tab-register" class="auth-tab-content">
                         <div class="auth-form">
                             <div class="form-group">
-                                <label><i class="fas fa-user"></i> User Name</label>
+                                <label><i class="fas fa-user"></i> <span data-i18n="profile.username">User Name</span></label>
                                 <input type="text" id="register-username" placeholder="Seu nome de usuário">
                             </div>
                             <div class="form-group">
-                                <label><i class="fas fa-gamepad"></i> Nick Name</label>
+                                <label><i class="fas fa-gamepad"></i> <span data-i18n="profile.nickname">Nick Name</span></label>
                                 <input type="text" id="register-nickname" placeholder="Seu nick no jogo" maxlength="15">
                             </div>
                             <div class="form-group">
-                                <label><i class="fas fa-envelope"></i> Email</label>
+                                <label><i class="fas fa-envelope"></i> <span data-i18n="profile.email">Email</span></label>
                                 <input type="email" id="register-email" placeholder="seu@email.com">
                             </div>
                             <div class="form-group">
-                                <label><i class="fas fa-lock"></i> Senha</label>
+                                <label><i class="fas fa-lock"></i> <span data-i18n="profile.password">Senha</span></label>
                                 <input type="password" id="register-password" placeholder="••••••••">
                             </div>
-                            <button class="auth-btn register-btn" onclick="handleRegister()">
-                                <i class="fas fa-user-plus"></i> Criar Conta
+                            <button type="button" class="auth-btn register-btn" onclick="handleRegister()">
+                                <i class="fas fa-user-plus"></i> <span data-i18n="profile.createAccount">Criar Conta</span>
                             </button>
                         </div>
                     </div>
                     
                     <div class="guest-footer">
-                        <p><i class="fas fa-info-circle"></i> Jogue como visitante ou crie uma conta para salvar seu progresso!</p>
+                        <p><i class="fas fa-info-circle"></i> <span data-i18n="profile.guestMessage">Jogue como visitante ou crie uma conta para salvar seu progresso!</span></p>
                     </div>
                 </div>
                 
@@ -152,27 +162,27 @@
                         <div class="stat-item">
                             <span class="stat-icon likes"><i class="fas fa-thumbs-up"></i></span>
                             <span class="stat-value" id="logged-likes">1.2K</span>
-                            <span class="stat-label">Likes</span>
+                            <span class="stat-label" data-i18n="profile.likes">Likes</span>
                         </div>
                         <div class="stat-item">
                             <span class="stat-icon dislikes"><i class="fas fa-thumbs-down"></i></span>
                             <span class="stat-value" id="logged-dislikes">23</span>
-                            <span class="stat-label">Dislikes</span>
+                            <span class="stat-label" data-i18n="profile.dislikes">Dislikes</span>
                         </div>
                         <div class="stat-item">
                             <span class="stat-icon hours"><i class="fas fa-clock"></i></span>
                             <span class="stat-value" id="logged-hours">156h</span>
-                            <span class="stat-label">Hours</span>
+                            <span class="stat-label" data-i18n="profile.hours">Hours</span>
                         </div>
                         <div class="stat-item">
                             <span class="stat-icon kills"><i class="fas fa-skull"></i></span>
                             <span class="stat-value" id="logged-kills">247</span>
-                            <span class="stat-label">Max Kills</span>
+                            <span class="stat-label" data-i18n="profile.maxKills">Max Kills</span>
                         </div>
                     </div>
                     
                     <div class="passes-section">
-                        <h4><span class="section-icon"><i class="fas fa-crown"></i></span> My Passes</h4>
+                        <h4><span class="section-icon"><i class="fas fa-crown"></i></span> <span data-i18n="profile.myPasses">My Passes</span></h4>
                         <div class="passes-list">
                             <span class="pass-tag premium"><i class="fas fa-crown"></i> Premium</span>
                             <span class="pass-tag vip"><i class="fas fa-gem"></i> VIP</span>
@@ -181,7 +191,7 @@
                     </div>
                     
                     <div class="emblems-section">
-                        <h4><span class="section-icon"><i class="fas fa-medal"></i></span> Emblems</h4>
+                        <h4><span class="section-icon"><i class="fas fa-medal"></i></span> <span data-i18n="profile.emblems">Emblems</span></h4>
                         <div class="emblems-list">
                             <span class="emblem"><i class="fas fa-star"></i></span>
                             <span class="emblem"><i class="fas fa-trophy"></i></span>
@@ -194,10 +204,10 @@
                     <div class="profile-actions">
                         <button class="shop-btn" onclick="openShopModal()">
                             <span class="btn-icon"><i class="fas fa-shopping-cart"></i></span>
-                            Shop
+                            <span data-i18n="profile.shop">Shop</span>
                         </button>
                         <button class="logout-btn" onclick="handleLogout()">
-                            <i class="fas fa-sign-out-alt"></i> Sair
+                            <i class="fas fa-sign-out-alt"></i> <span data-i18n="profile.logout">Sair</span>
                         </button>
                     </div>
                 </div>
@@ -209,9 +219,9 @@
                 <div class="davos-card">
                     <!-- Tabs Header -->
                     <div class="davos-tabs">
-                        <button class="tab-btn active" onclick="showTab('play', this)">Play</button>
-                        <button class="tab-btn" onclick="showTab('clan', this)">Clan</button>
-                        <button class="tab-btn" onclick="showTab('updates', this)">Updates</button>
+                        <button class="tab-btn active" onclick="showTab('play', this)" data-i18n="play.tab">Play</button>
+                        <button class="tab-btn" onclick="showTab('clan', this)" data-i18n="clan.tab">Clan</button>
+                        <button class="tab-btn" onclick="showTab('updates', this)" data-i18n="updates.tab">Updates</button>
                         <button class="tab-settings" onclick="openSettingsModal()"><i class="fas fa-cog"></i></button>
                     </div>
                     
@@ -225,22 +235,22 @@
                             <div class="skin-box">
                                 <i class="fas fa-plus"></i>
                             </div>
-                            <span class="skin-text">Select Skin</span>
+                            <span class="skin-text" data-i18n="skins.selectSkin">Select Skin</span>
                         </div>
                         
                         <!-- Server Dropdown -->
                         <div class="server-dropdown">
                             <i class="fas fa-server"></i>
                             <select id="gamemode" onchange="setserver($(this).val());" required>
-                                <option value="FFA">FFA - Free For All</option>
-                                <option value="Teams">Teams - Equipes</option>
-                                <option value="Experimental">Experimental</option>
-                                <option value="Rainbow">Rainbow - Arco-íris</option>
-                                <option value="Tournament">Tournament - Torneio</option>
-                                <option value="HungerGames">Hunger Games</option>
-                                <option value="Zombie">Zombie - Zumbi</option>
-                                <option value="TeamX">TeamX - Time X</option>
-                                <option value="TeamZ">TeamZ - Time Z</option>
+                                <option value="FFA" data-i18n="server.ffa">FFA - Free For All</option>
+                                <option value="Teams" data-i18n="server.teams">Teams - Equipes</option>
+                                <option value="Experimental" data-i18n="server.experimental">Experimental</option>
+                                <option value="Rainbow" data-i18n="server.rainbow">Rainbow - Arco-íris</option>
+                                <option value="Tournament" data-i18n="server.tournament">Tournament - Torneio</option>
+                                <option value="HungerGames" data-i18n="server.hungerGames">Hunger Games</option>
+                                <option value="Zombie" data-i18n="server.zombie">Zombie - Zumbi</option>
+                                <option value="TeamX" data-i18n="server.teamX">TeamX - Time X</option>
+                                <option value="TeamZ" data-i18n="server.teamZ">TeamZ - Time Z</option>
                             </select>
                             <i class="fas fa-chevron-down dropdown-arrow"></i>
                         </div>
@@ -253,6 +263,7 @@
                                 class="save" 
                                 data-box-id="0" 
                                 placeholder="Enter your nickname" 
+                                data-i18n-placeholder="play.nicknamePlaceholder"
                                 maxlength="15"
                             >
                         </div>
@@ -264,7 +275,7 @@
                             class="davos-play-btn"
                             onclick="window.setNick(document.getElementById('nick').value); return false;"
                         >
-                            <span class="play-text">PLAY</span>
+                            <span class="play-text" data-i18n="play.button">PLAY</span>
                         </button>
                         
                         <!-- Spectate Link -->
@@ -274,7 +285,7 @@
                             onclick="spectate(); return false;"
                         >
                             <i class="fas fa-eye"></i>
-                            <span>Spectate</span>
+                            <span data-i18n="play.spectate">Spectate</span>
                         </button>
                     </div>
                     
@@ -284,10 +295,10 @@
                             <div class="mockup-icon">
                                 <i class="fas fa-users"></i>
                             </div>
-                            <h3>Join a Clan!</h3>
-                            <p>Team up with friends and dominate the leaderboard together.</p>
+                            <h3 data-i18n="clan.joinTitle">Join a Clan!</h3>
+                            <p data-i18n="clan.description">Team up with friends and dominate the leaderboard together.</p>
                             <button class="mockup-btn" onclick="openClanModal()">
-                                <i class="fas fa-shield-alt"></i> Open Clan
+                                <i class="fas fa-shield-alt"></i> <span data-i18n="clan.open">Open Clan</span>
                             </button>
                         </div>
                     </div>
@@ -298,14 +309,14 @@
                             <div class="mockup-icon">
                                 <i class="fas fa-bullhorn"></i>
                             </div>
-                            <h3>Latest Updates</h3>
-                            <p>New clan system, performance improvements, and more!</p>
+                            <h3 data-i18n="updates.latest">Latest Updates</h3>
+                            <p data-i18n="updates.description">New clan system, performance improvements, and more!</p>
                             <div class="update-preview">
                                 <span class="version-tag">v2.4.0</span>
                                 <span class="update-count">4 new changes</span>
                             </div>
                             <button class="mockup-btn" onclick="openUpdatesModal()">
-                                <i class="fas fa-list"></i> View All Updates
+                                <i class="fas fa-list"></i> <span data-i18n="updates.viewAll">View All Updates</span>
                             </button>
                         </div>
                     </div>
@@ -315,8 +326,8 @@
                 <div id="inventory-card" class="hidden-logged-out">
                     <!-- Tabs Header -->
                     <div class="inventory-tabs">
-                        <button class="inv-tab-btn active" onclick="showInvTab('inventory', this)">Inventory</button>
-                        <button class="inv-tab-btn" onclick="showInvTab('cases', this)">Cases</button>
+                        <button class="inv-tab-btn active" onclick="showInvTab('inventory', this)" data-i18n="inventory.title">Inventory</button>
+                        <button class="inv-tab-btn" onclick="showInvTab('cases', this)" data-i18n="inventory.cases">Cases</button>
                     </div>
                     
                     <!-- Tab Inventory -->
@@ -376,7 +387,7 @@
                             </div>
                         </div>
                         <button class="inventory-btn cases-btn" onclick="openCasesModal()">
-                            <i class="fas fa-th"></i> View More Cases
+                            <i class="fas fa-th"></i> <span data-i18n="inventory.viewMore">View More Cases</span>
                         </button>
                     </div>
                 </div>
@@ -385,7 +396,7 @@
             <div class="right-column">
                 <!-- Card Leaderboard -->
                 <div id="leaderboard-card">
-                    <h3><i class="fas fa-trophy"></i> Leaderboard</h3>
+                    <h3><i class="fas fa-trophy"></i> <span data-i18n="leaderboard.title">Leaderboard</span></h3>
                     <div class="leaderboard-list">
                         <div class="leaderboard-item">
                             <span class="rank rank-1">1</span>
@@ -414,21 +425,21 @@
                         </div>
                     </div>
                     <button class="view-all-btn" onclick="openLeaderboardModal()">
-                        <i class="fas fa-list"></i> View Full Leaderboard
+                        <i class="fas fa-list"></i> <span data-i18n="leaderboard.viewFull">View Full Leaderboard</span>
                     </button>
                 </div>
                 
                 <!-- Card Battle Pass -->
                 <div id="battlepass-card" class="hidden-logged-out">
                     <div class="battlepass-header">
-                        <h3><i class="fas fa-crown"></i> Battle Pass</h3>
-                        <span class="bp-season">Season 1</span>
+                        <h3><i class="fas fa-crown"></i> <span data-i18n="battlePass.title">Battle Pass</span></h3>
+                        <span class="bp-season"><span data-i18n="battlePass.season">Season</span> 1</span>
                     </div>
                     
                     <div class="battlepass-level">
                         <div class="level-badge">
                             <span class="level-num">12</span>
-                            <span class="level-label">LVL</span>
+                            <span class="level-label" data-i18n="battlePass.level">LVL</span>
                         </div>
                         <div class="level-info">
                             <span class="tier-name">Gold Tier</span>
@@ -463,7 +474,7 @@
                     </div>
                     
                     <button class="battlepass-btn" onclick="openBattlePassModal()">
-                        <i class="fas fa-crown"></i> Open Battle Pass
+                        <i class="fas fa-crown"></i> <span data-i18n="battlePass.open">Open Battle Pass</span>
                     </button>
                 </div>
             </div>
@@ -473,8 +484,8 @@
     <!-- Connecting Screen -->
     <div id="connecting">
         <div class="connect-box">
-            <h2>Connecting</h2>
-            <p>If you cannot connect to the servers, check if you have some anti virus or firewall blocking the connection.</p>
+            <h2 data-i18n="connecting.title">Connecting</h2>
+            <p data-i18n="connecting.message">If you cannot connect to the servers, check if you have some anti virus or firewall blocking the connection.</p>
         </div>
     </div>
 
@@ -484,17 +495,18 @@
     <!-- Chat Interface -->
     <div id="chat-ui">
         <div id="chat-messages"></div>
-        <input type="text" id="chat-input" placeholder="Escreva aqui..." maxlength="200">
+        <input type="text" id="chat-input" placeholder="Escreva aqui..." data-i18n-placeholder="chat.placeholder" maxlength="200">
     </div>
     
     <!-- Chat Hint -->
-    <div id="chat-hint">Pressione Q para chat</div>
+    <div id="chat-hint" data-i18n="chat.hint">Pressione Q para chat</div>
 
     <!-- Modals -->
     <?php include 'include/modals/settings.html'; ?>
     <?php include 'include/modals/shop.html'; ?>
     <?php include 'include/modals/backpack.html'; ?>
     <?php include 'include/modals/cases.html'; ?>
+    <?php include 'include/modals/boosters.html'; ?>
     <?php include 'include/modals/battlepass.html'; ?>
     <?php include 'include/modals/leaderboard.html'; ?>
     <?php include 'include/modals/skins.html'; ?>
@@ -504,6 +516,7 @@
 
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="assets/js/i18n.js"></script>
     <script src="assets/js/log.js"></script>
     <script src="assets/js/vector.js"></script>
     <script src="assets/js/main_out.js"></script>

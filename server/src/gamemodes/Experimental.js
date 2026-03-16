@@ -46,7 +46,7 @@ Experimental.prototype.onServerInit = function(gameServer) {
     var mapSize = gameServer.config.borderLeft + gameServer.config.borderRight +
         gameServer.config.borderTop + gameServer.config.borderRight;
 
-    this.motherMinAmount = Math.ceil(mapSize / 2020.28572); // 14 mother cells for agar.io map size
+    this.motherMinAmount = Math.ceil(mapSize / 2020.28572); // 14 mother cells for davos.io map size
 
     // Special virus mechanics
     Virus.prototype.feed = function(feeder) {

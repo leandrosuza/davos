@@ -228,12 +228,26 @@ function openCasesModal() {
 
 function openCaseWithName(caseName) {
     const modal = document.getElementById('case-modal');
+    const boostersModal = document.getElementById('boosters-modal');
     const titleElement = document.getElementById('case-modal-title');
+    
+    console.log('Opening case:', caseName);
+    console.log('Boosters modal element:', boostersModal);
+    
     if (modal) {
         if (titleElement) {
             titleElement.textContent = caseName;
         }
         modal.classList.add('active');
+        
+        // Abrir painel Boosters junto com o modal da roleta
+        if (boostersModal) {
+            boostersModal.classList.add('active');
+            console.log('Boosters panel activated');
+        } else {
+            console.error('Boosters modal not found!');
+        }
+        
         // Delay maior para garantir que o modal esteja completamente renderizado
         setTimeout(function() {
             console.log('=== DEBUG ROULETTE (openCaseWithName) ===');
@@ -313,8 +327,13 @@ function resetRoulette() {
 
 function closeCaseModal() {
     const modal = document.getElementById('case-modal');
+    const boostersModal = document.getElementById('boosters-modal');
     if (modal) {
         modal.classList.remove('active');
+    }
+    // Fechar painel Boosters junto com o modal da roleta
+    if (boostersModal) {
+        boostersModal.classList.remove('active');
     }
 }
 
@@ -664,7 +683,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Função para carregar modais dinamicamente se PHP falhar
 function loadModalsDynamically() {
     const modalsToLoad = [
-        'settings.html', 'shop.html', 'backpack.html', 'cases.html', 
+        'settings.html', 'shop.html', 'backpack.html', 'cases.html', 'boosters.html',
         'battlepass.html', 'leaderboard.html', 'skins.html',
         'message.html', 'clan.html', 'updates.html'
     ];

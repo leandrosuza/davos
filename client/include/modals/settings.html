@@ -2,37 +2,45 @@
 <div id="settings-modal" class="modal">
     <div class="modal-content settings-modal-content">
         <div class="modal-header">
-            <h2><i class="fas fa-cog"></i> Settings</h2>
+            <h2><i class="fas fa-cog"></i> <span data-i18n="settings.title">Settings</span></h2>
             <button class="modal-close" onclick="closeSettingsModal()">&times;</button>
         </div>
         <div class="modal-body settings-body">
+            <div class="setting-item">
+                <label for="language-select"><i class="fas fa-globe"></i> <span data-i18n="settings.language">Language</span></label>
+                <select id="language-select" onchange="I18n.setLanguage(this.value);">
+                    <option value="en">English</option>
+                    <option value="pt">Português</option>
+                    <option value="tr">Türkçe</option>
+                </select>
+            </div>
             <label>
                 <input type="checkbox" class="save" data-box-id="1" onchange="setSkins(!$(this).is(':checked'));">
-                No skins
+                <span data-i18n="settings.noSkins">No skins</span>
             </label>
             <label>
                 <input type="checkbox" class="save" data-box-id="2" onchange="setNames(!$(this).is(':checked'));">
-                No names
+                <span data-i18n="settings.noNames">No names</span>
             </label>
             <label>
                 <input type="checkbox" class="save" data-box-id="3" onchange="setDarkTheme($(this).is(':checked'));">
-                Dark Theme
+                <span data-i18n="settings.darkTheme">Dark Theme</span>
             </label>
             <label>
                 <input type="checkbox" class="save" data-box-id="4" onchange="setColors($(this).is(':checked'));">
-                No colors
+                <span data-i18n="settings.noColors">No colors</span>
             </label>
             <label>
                 <input type="checkbox" class="save" data-box-id="5" onchange="setShowMass($(this).is(':checked'));">
-                Show mass
+                <span data-i18n="settings.showMass">Show mass</span>
             </label>
             <label>
                 <input type="checkbox" class="save" data-box-id="6" onchange="setSmooth($(this).is(':checked'));">
-                Smooth Render
+                <span data-i18n="settings.smoothRender">Smooth Render</span>
             </label>
             <label>
                 <input type="checkbox" class="save" data-box-id="7" onchange="setChatHide($(this).is(':checked'));">
-                Hide Chat
+                <span data-i18n="settings.hideChat">Hide Chat</span>
             </label>
         </div>
     </div>

@@ -69,7 +69,7 @@ function GameServer() {
         serverLogLevel: 1, // Logging level of the server. 0 = No logs, 1 = Logs the console, 2 = Logs console and ip connections
         serverTeamingAllowed: 1, // Toggles anti-teaming. 0 = Anti-team enabled, 1 = Anti-team disabled
         serverMaxLB: 10, //	Controls the maximum players displayed on the leaderboard.
-        serverDiscardForeignClients: 0, // Discards connections from foreign domains. Only agar.io is accepted. Default is 1.
+        serverDiscardForeignClients: 0, // Discards connections from foreign domains. Only davos.io is accepted. Default is 1.
         serverRestartInterval: 0, // serverRestartInterval: In minutes, full server restarting interval. Set to 0 or below to disable. Default is 0.
         scrambleCoords: 1, // Toggles scrambling of coordinates. 0 = No scrambling, 1 = scrambling. Default is 1.
         scrambleMinimaps: 1, // Toggles scrambling of borders to render maps unusable. 0 = No scrambling, 1 = scrambling. Default is 1.rray
@@ -185,8 +185,8 @@ GameServer.prototype.start = function() {
 
         // Allow connections from Railway domains
         var origin = req.headers.origin;
-        if ((origin != 'http://agar.io' &&
-            origin != 'https://agar.io' &&
+        if ((origin != 'http://davos.io' &&
+            origin != 'https://davos.io' &&
             origin != 'http://localhost' &&
             origin != 'https://localhost' &&
             origin != 'http://127.0.0.1' &&

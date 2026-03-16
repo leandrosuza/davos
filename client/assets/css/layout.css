@@ -6,14 +6,16 @@
 #helloDialog {
     display: flex;
     flex-direction: row;
-    gap: 10px;
-    align-items: center;
+    gap: 15px;
+    align-items: flex-start;
     justify-content: center;
     position: relative;
     margin: 0 auto;
+    max-width: 100vw;
     max-height: 100vh;
-    transform: scale(0.8);
-    transform-origin: center center;
+    padding: 20px;
+    box-sizing: border-box;
+    flex-wrap: wrap;
 }
 
 /* Columns */

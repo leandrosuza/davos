@@ -6,103 +6,29 @@
             <button class="modal-close" onclick="closeCaseModal()">&times;</button>
         </div>
         <div class="modal-body case-body">
-            <section class="roulette-section">
-                <div class="roulette-container">
-                    <div class="selector-arrow"></div>
-                    <div class="roulette-wrapper" id="roulette">
-                        <div class="skin-card consumer">
-                            <i class="fas fa-crosshairs" style="color: #b0c3d9"></i>
-                            <span class="skin-name">Marble Platinum</span>
-                            <span class="skin-weapon">P90</span>
-                        </div>
-                        <div class="skin-card consumer">
-                            <i class="fas fa-crosshairs" style="color: #b0c3d9"></i>
-                            <span class="skin-name">Blood Club</span>
-                            <span class="skin-weapon">Sawed-Off</span>
-                        </div>
-                        <div class="skin-card industrial">
-                            <i class="fas fa-crosshairs" style="color: #5e98d9"></i>
-                            <span class="skin-name">Ice Bronze</span>
-                            <span class="skin-weapon">Negev</span>
-                        </div>
-                        <div class="skin-card consumer">
-                            <i class="fas fa-khanda" style="color: #b0c3d9"></i>
-                            <span class="skin-name">Asiimov Warrior</span>
-                            <span class="skin-weapon">Karambit</span>
-                        </div>
-                        <div class="skin-card industrial">
-                            <i class="fas fa-crosshairs" style="color: #5e98d9"></i>
-                            <span class="skin-name">Shadow Splash</span>
-                            <span class="skin-weapon">MAG-7</span>
-                        </div>
-                        <div class="skin-card consumer">
-                            <i class="fas fa-crosshairs" style="color: #b0c3d9"></i>
-                            <span class="skin-name">Fade Check</span>
-                            <span class="skin-weapon">PP-Bizon</span>
-                        </div>
-                        <div class="skin-card consumer">
-                            <i class="fas fa-crosshairs" style="color: #b0c3d9"></i>
-                            <span class="skin-name">Snake Wing</span>
-                            <span class="skin-weapon">M4A1-S</span>
-                        </div>
-                        <div class="skin-card industrial">
-                            <i class="fas fa-crosshairs" style="color: #5e98d9"></i>
-                            <span class="skin-name">Moon King</span>
-                            <span class="skin-weapon">P250</span>
-                        </div>
-                        <div class="skin-card consumer">
-                            <i class="fas fa-crosshairs" style="color: #b0c3d9"></i>
-                            <span class="skin-name">Electric Joker</span>
-                            <span class="skin-weapon">AK-47</span>
-                        </div>
-                        <div class="skin-card consumer">
-                            <i class="fas fa-crosshairs" style="color: #b0c3d9"></i>
-                            <span class="skin-name">Sand Gold</span>
-                            <span class="skin-weapon">USP-S</span>
-                        </div>
-                        <div class="skin-card milspec">
-                            <i class="fas fa-crosshairs" style="color: #4b69ff"></i>
-                            <span class="skin-name">Rust Warrior</span>
-                            <span class="skin-weapon">Negev</span>
-                        </div>
-                        <div class="skin-card restricted">
-                            <i class="fas fa-khanda" style="color: #8847ff"></i>
-                            <span class="skin-name">Dragon Lore</span>
-                            <span class="skin-weapon">AWP</span>
-                        </div>
-                        <div class="skin-card consumer">
-                            <i class="fas fa-crosshairs" style="color: #b0c3d9"></i>
-                            <span class="skin-name">Hyper Beast</span>
-                            <span class="skin-weapon">UMP-45</span>
-                        </div>
-                        <div class="skin-card classified">
-                            <i class="fas fa-hand-paper" style="color: #d32ce6"></i>
-                            <span class="skin-name">Crimson Web</span>
-                            <span class="skin-weapon">Gloves</span>
-                        </div>
-                        <div class="skin-card consumer">
-                            <i class="fas fa-crosshairs" style="color: #b0c3d9"></i>
-                            <span class="skin-name">Vulcan Gold</span>
-                            <span class="skin-weapon">P90</span>
-                        </div>
-                        <div class="skin-card covert">
-                            <i class="fas fa-khanda" style="color: #eb4b4b"></i>
-                            <span class="skin-name">Fade Knife</span>
-                            <span class="skin-weapon">Knife</span>
-                        </div>
-                        <div class="skin-card consumer">
-                            <i class="fas fa-crosshairs" style="color: #b0c3d9"></i>
-                            <span class="skin-name">Ice Joker</span>
-                            <span class="skin-weapon">FAMAS</span>
-                        </div>
-                        <div class="skin-card industrial">
-                            <i class="fas fa-crosshairs" style="color: #5e98d9"></i>
-                            <span class="skin-name">Moon Queen</span>
-                            <span class="skin-weapon">UMP-45</span>
-                        </div>
+            <section class="roulette-section" id="rouletteSection">
+                <!-- Roulette Stack - Middle always visible, top/bottom toggleable -->
+                <div class="roulette-stack-container" id="rouletteStackContainer">
+                    <!-- Top Roulette (hidden when Trick Open off) -->
+                    <div class="roulette-layer" id="rouletteLayer1" style="display:none;">
+                        <div class="selector-arrow"></div>
+                        <div class="roulette-wrapper" id="roulette1"></div>
+                    </div>
+                    
+                    <!-- Middle Roulette (always visible - the main one) -->
+                    <div class="roulette-layer" id="rouletteLayer2">
+                        <div class="selector-arrow"></div>
+                        <div class="roulette-wrapper" id="roulette2"></div>
+                    </div>
+                    
+                    <!-- Bottom Roulette (hidden when Trick Open off) -->
+                    <div class="roulette-layer" id="rouletteLayer3" style="display:none;">
+                        <div class="selector-arrow"></div>
+                        <div class="roulette-wrapper" id="roulette3"></div>
                     </div>
                 </div>
-                <button class="open-btn" id="openBtn" onclick="spinRoulette()"><i class="fas fa-key"></i> OPEN CASE</button>
+                
+                <button class="open-btn" id="openBtn" onclick="spinRoulette()"><i class="fas fa-key"></i> Girar</button>
             </section>
         </div>
     </div>

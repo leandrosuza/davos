@@ -13,14 +13,37 @@
 body {
     font-family: 'Ubuntu', sans-serif;
     overflow: hidden;
-    background: var(--body-bg, #0a0a0a);
+    background: var(--body-bg, #e8e8e8);
     transition: background 0.3s ease;
     padding: 0;
 }
 
 /* ============================================
-   THEME VARIABLES
+   THEME VARIABLES - PADRAO: TEMA CLARO
    ============================================ */
+body {
+    --body-bg: #e8e8e8;
+    --menu-canvas-bg: #F2FBFF;
+    --overlay-bg: rgba(255, 255, 255, 0.4);
+    --card-bg: linear-gradient(145deg, #ffffff 0%, #f5f5f5 100%);
+    --card-text: #333;
+    --card-text-secondary: #666;
+    --input-bg: #fff;
+    --input-bg-focus: #f0f0f0;
+    --input-border: #ddd;
+    --input-text: #333;
+    --tab-inactive: #888;
+    --stat-bg: #f0f0f0;
+    --stat-bg-hover: #e0e0e0;
+    --settings-text: #555;
+    --border-color: rgba(0,0,0,0.1);
+    --modal-header-bg: rgba(0,0,0,0.05);
+    --modal-header-border: rgba(0,0,0,0.1);
+    --modal-scrollbar-track: #e0e0e0;
+    --modal-scrollbar-thumb: #bbb;
+    --modal-scrollbar-thumb-hover: #999;
+}
+
 body.light-theme {
     --body-bg: #e8e8e8;
     --menu-canvas-bg: #F2FBFF;
@@ -44,7 +67,7 @@ body.light-theme {
     --modal-scrollbar-thumb-hover: #999;
 }
 
-body:not(.light-theme) {
+body.dark-theme, html.dark-theme {
     --body-bg: #0a0a0a;
     --menu-canvas-bg: #111111;
     --overlay-bg: rgba(0, 0, 0, 0.3);
@@ -82,9 +105,13 @@ body:not(.light-theme) {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    overflow-y: hidden;
+    overflow-y: auto;
     overflow-x: hidden;
     padding: 20px;
+    box-sizing: border-box;
+    /* Scrollbar suave */
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
 }
 
 #canvas {
@@ -99,11 +126,11 @@ body:not(.light-theme) {
     transition: background 0.3s ease;
 }
 
-body:not(.light-theme) #canvas {
+body.dark-theme #canvas, html.dark-theme #canvas {
     background: #111111 !important;
 }
 
-body:not(.light-theme) {
+body.dark-theme, html.dark-theme {
     background: #0a0a0a !important;
 }
 

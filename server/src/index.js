@@ -5,7 +5,7 @@ var AsyncConsole = require('asyncconsole');
 // Init variables
 var showConsole = true;
 // Start message
-console.log("[Game] Game Server - An open source Agar.io server implementation");
+console.log("[Game] Game Server - An open source Davos.io server implementation");
 
 // Handle arguments
 process.argv.forEach(function(val) {
