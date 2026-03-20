@@ -1781,115 +1781,117 @@
     
     // Triple Win Effect - Show 3 winners in triple roulette
     function showTripleWinEffect(wonSkins) {
-        console.log('[showTripleWinEffect] START - Called with', wonSkins.length, 'skins:', wonSkins.map(s => s.name).join(', '));
         var caseModal = document.getElementById('case-modal');
         var openBtn = document.getElementById('openBtn');
         
-        if (!caseModal) {
-            console.log('[showTripleWinEffect] ERROR: case-modal not found!');
-            return;
-        }
-        console.log('[showTripleWinEffect] case-modal found');
+        if (!caseModal) return;
         
         var roulettes = ['roulette1', 'roulette2', 'roulette3'];
         var winningCards = [];
         
-        // Apply win effects to all 3 winning cards
-        roulettes.forEach(function(rouletteId, index) {
-            var roulette = document.getElementById(rouletteId);
-            console.log('[showTripleWinEffect] Roulette', rouletteId, 'found:', !!roulette, 'children:', roulette ? roulette.children.length : 0);
-            if (!roulette) return;
-            
-            var cards = Array.from(roulette.children);
-            // The winning card is at position 45 (index 45)
-            var winningCard = cards[45];
-            console.log('[showTripleWinEffect] Card at index 45:', winningCard ? winningCard.className : 'NOT FOUND', 'total cards:', cards.length);
-            
-            if (winningCard) {
-                var itemColor = wonSkins[index].rarityColor || '#ffd700';
-                var itemRarity = wonSkins[index].rarity || 'consumer';
+        // Aplicar efeitos após delay para garantir que todas as roletas pararam
+        setTimeout(function() {
+            // Apply win effects to all 3 winning cards
+            roulettes.forEach(function(rouletteId, index) {
+                var roulette = document.getElementById(rouletteId);
+                if (!roulette) return;
                 
-                console.log('[showTripleWinEffect] Applying styles to card at index', index, 'color:', itemColor);
+                var cards = Array.from(roulette.children);
+                var winningCard = cards[45];
                 
-                // Force reflow to ensure styles apply
-                winningCard.style.cssText = '';
-                void winningCard.offsetHeight;
-                
-                // Apply winning animation - EXACTLY same as single roulette
-                winningCard.classList.add('winning-card');
-                winningCard.style.cssText = 'background:linear-gradient(145deg, #1a1d29 0%, #0f1119 100%) !important;border:3px solid ' + itemColor + ' !important;border-radius:12px !important;box-shadow:0 0 60px ' + itemColor + '80, 0 10px 30px rgba(0,0,0,0.5) !important;transform:scale(1.3) !important;z-index:100 !important;position:relative !important;transition:all 0.3s ease !important;';
-                
-                // Force another reflow
-                void winningCard.offsetHeight;
-                
-                console.log('[showTripleWinEffect] Styles applied:', winningCard.style.cssText);
-                
-                // Add glow effect with pointer-events none
-                var glow = document.createElement('div');
-                glow.className = 'win-glow';
-                glow.style.cssText = 'position:absolute;width:150px;height:150px;background:radial-gradient(circle, ' + itemColor + '60 0%, transparent 70%);border-radius:50%;z-index:99;animation:pulseGlow 1.5s ease-in-out infinite;pointer-events:none;left:50%;top:50%;transform:translate(-50%, -50%);';
-                winningCard.appendChild(glow);
-                
-                // Store for cleanup with full item data
-                winningCards.push({
-                    card: winningCard, 
-                    roulette: roulette, 
-                    rarity: itemRarity, 
-                    color: itemColor,
-                    skin: wonSkins[index]
-                });
-                
-                // Log for debugging
-                console.log('[Triple Win] Item ' + (index + 1) + ':', wonSkins[index].name, 'Rarity:', itemRarity, 'Card classes:', winningCard.className);
-            } else {
-                console.log('[showTripleWinEffect] WARNING: No winning card found at index 45 for roulette', rouletteId);
-            }
-        });
-        
-        console.log('[showTripleWinEffect] Total winning cards found:', winningCards.length);
-        
-        // Shoot confetti for each winning item individually (same logic as single roulette)
-        winningCards.forEach(function(item, index) {
-            var highTiers = ['epic', 'legendary', 'mythic', 'rare'];
-            if (highTiers.indexOf(item.skin.rarity) !== -1) {
-                console.log('[Triple Confetti] Shooting confetti for item ' + (index + 1) + ' - rarity:', item.skin.rarity);
-                shootConfettiForItem(item.roulette, item.skin);
-            }
-        });
-        
-        // Change button to Girar Novamente
-        openBtn.innerHTML = '<i class="fas fa-redo" style="margin-right:8px;"></i>Girar Novamente';
-        openBtn.style.background = 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)';
-        openBtn.disabled = false;
-        openBtn.onclick = function() {
-            // Remove winning effects from all cards
-            winningCards.forEach(function(item) {
-                if (item.card) {
-                    item.card.classList.remove('winning-card');
-                    item.card.style.cssText = '';
-                    var oldGlow = item.card.querySelector('.win-glow');
-                    if (oldGlow) oldGlow.remove();
-                }
-                
-                // Reset roulette position
-                if (item.roulette) {
-                    item.roulette.style.transition = 'none';
-                    item.roulette.style.transform = 'translateX(0)';
+                if (winningCard) {
+                    var itemColor = wonSkins[index].rarityColor || '#ffd700';
+                    var itemRarity = wonSkins[index].rarity || 'consumer';
+                    
+                    // Aguardar para garantir que roleta parou completamente
+                    setTimeout(function() {
+                        requestAnimationFrame(function() {
+                            // Aplicar estilos diretamente no card com !important
+                            winningCard.style.cssText = 
+                                'background:linear-gradient(145deg, #1a1d29 0%, #0f1119 100%) !important;' +
+                                'border:4px solid ' + itemColor + ' !important;' +
+                                'border-radius:12px !important;' +
+                                'box-shadow:0 0 80px ' + itemColor + '80, 0 10px 30px rgba(0,0,0,0.5), inset 0 0 40px ' + itemColor + '40 !important;' +
+                                'transform:scale(1.3) !important;' +
+                                'z-index:999999 !important;' +
+                                'position:relative !important;';
+                            
+                            // Adicionar glow como filho do card
+                            var glow = document.createElement('div');
+                            glow.style.cssText = 
+                                'position:absolute;' +
+                                'width:180px;' +
+                                'height:180px;' +
+                                'background:radial-gradient(circle, ' + itemColor + '50 0%, transparent 70%);' +
+                                'border-radius:50%;' +
+                                'z-index:-1;' +
+                                'animation:pulseGlow 1.5s ease-in-out infinite;' +
+                                'left:50%;' +
+                                'top:50%;' +
+                                'margin-left:-90px;' +
+                                'margin-top:-90px;';
+                            winningCard.appendChild(glow);
+                            
+                            winningCard.classList.add('winning-card');
+                        });
+                    }, 500);
+                    
+                    // Store for cleanup
+                    winningCards.push({
+                        card: winningCard, 
+                        roulette: roulette, 
+                        rarity: itemRarity, 
+                        color: itemColor,
+                        skin: wonSkins[index]
+                    });
                 }
             });
             
-            // Reset button
-            openBtn.innerHTML = trickOpenState ? '<i class="fas fa-layer-group"></i> OPEN 3x' : '<i class="fas fa-key"></i> Girar';
-            openBtn.style.background = '';
+            // Shoot confetti for each winning item individually (same logic as single roulette)
+            winningCards.forEach(function(item, index) {
+                var highTiers = ['epic', 'legendary', 'mythic', 'rare'];
+                if (highTiers.indexOf(item.skin.rarity) !== -1) {
+                    shootConfettiForItem(item.roulette, item.skin);
+                }
+            });
             
-            // Regenerate cards
-            generateRoulette();
-            
-            // Spin automatically
-            setTimeout(function() {
-                wHandle.spinRoulette();
-            }, 100);
-        };
+            // Change button to Girar Novamente
+            openBtn.innerHTML = '<i class="fas fa-redo" style="margin-right:8px;"></i>Girar Novamente';
+            openBtn.style.background = 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)';
+            openBtn.disabled = false;
+            openBtn.onclick = function() {
+                // Remove winning effects from all cards
+                winningCards.forEach(function(item) {
+                    if (item.card) {
+                        item.card.classList.remove('winning-card');
+                        item.card.style.cssText = '';
+                        var oldGlow = item.card.querySelector('.win-glow');
+                        if (oldGlow) oldGlow.remove();
+                        // Remove qualquer glow adicionado
+                        var glows = item.card.querySelectorAll('div[style*="pulseGlow"]');
+                        glows.forEach(function(g) { g.remove(); });
+                    }
+                    
+                    // Reset roulette position
+                    if (item.roulette) {
+                        item.roulette.style.transition = 'none';
+                        item.roulette.style.transform = 'translateX(0)';
+                    }
+                });
+                
+                // Reset button
+                openBtn.innerHTML = trickOpenState ? '<i class="fas fa-layer-group"></i> OPEN 3x' : '<i class="fas fa-key"></i> Girar';
+                openBtn.style.background = '';
+                
+                // Regenerate cards
+                generateRoulette();
+                
+                // Spin automatically
+                setTimeout(function() {
+                    wHandle.spinRoulette();
+                }, 100);
+            };
+        }, 100); // Small delay to ensure DOM is ready
     }
     
     // Confetti for specific item (same logic as single roulette)
@@ -2166,14 +2168,13 @@
             
             // After all spins complete
             setTimeout(function() {
-                console.log('[Triple Roulette] Spin complete, calling showTripleWinEffect with', wonSkins.length, 'skins');
                 isSpinning = false;
                 openBtn.disabled = false;
                 openBtn.innerHTML = '<i class="fas fa-layer-group"></i> OPEN 3x';
                 
-                // Show win effects for all 3 items
+                // Show win effects for all 3 items - delay increased to ensure layout stable
                 showTripleWinEffect(wonSkins);
-            }, 4250); // Slightly longer to account for stagger
+            }, 4600); // Extra time after last roulette finishes at 4250ms
             
         } else {
             // Single roulette spin (original logic) - use roulette2 as main
