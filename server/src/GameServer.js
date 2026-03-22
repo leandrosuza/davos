@@ -491,6 +491,11 @@ GameServer.prototype.spawnPlayer = function(player, pos, mass) {
     // Reset player's scramblers
     player.resetScramble();
 
+    // Aplicar cor customizada do jogador se definida
+    if (player.customColor) {
+        player.color = player.customColor;
+    }
+
     // Spawn player and add to world
     var cell = new Entity.PlayerCell(this.getNextNodeId(), player, pos, mass, this);
     player.mouse = new Vector(pos.x, pos.y);

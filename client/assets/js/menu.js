@@ -506,22 +506,215 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
+// ============================================
+// SKINS GALLERY - Colors & Skins
+// ============================================
+
+var _skinSelection = {
+    color: localStorage.getItem('player_color') || null,
+    skin:  localStorage.getItem('player_skin')  || null
+};
+
+var PRESET_COLORS = [
+    '#ff4444','#ff8800','#ffcc00','#88cc00',
+    '#00cc44','#00ccaa','#00aaff','#4466ff',
+    '#8844ff','#cc44ff','#ff44aa','#ff4488',
+    '#ffffff','#cccccc','#888888','#333333',
+    '#ff6b6b','#ffd93d','#6bcb77','#4d96ff',
+    '#f72585','#7209b7','#3a0ca3','#4cc9f0',
+];
+
 function openSkinsModal() {
     const modal = document.getElementById('skinsModal');
-    if (modal) {
-        modal.classList.add('active');
-        if (typeof openSkinsList === 'function') {
-            openSkinsList();
-        }
-    }
+    if (!modal) return;
+    modal.classList.add('active');
+    _buildColorPalette();
+    _buildSkinsGrid();
+    _updateSkinPreview();
 }
 
 function closeSkinsModal() {
     const modal = document.getElementById('skinsModal');
-    if (modal) {
-        modal.classList.remove('active');
+    if (modal) modal.classList.remove('active');
+}
+
+function switchSkinsTab(tab, btn) {
+    document.querySelectorAll('.skins-tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.skins-tab-content').forEach(c => c.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    const content = document.getElementById('skins-tab-' + tab);
+    if (content) content.classList.add('active');
+}
+
+function _buildColorPalette() {
+    const palette = document.getElementById('colorPalette');
+    if (!palette) return;
+    palette.innerHTML = '';
+    PRESET_COLORS.forEach(function(hex) {
+        const sw = document.createElement('div');
+        sw.className = 'color-swatch' + (_skinSelection.color === hex && !_skinSelection.skin ? ' selected' : '');
+        sw.style.background = hex;
+        sw.title = hex;
+        sw.onclick = function() { selectPresetColor(hex); };
+        palette.appendChild(sw);
+    });
+    // Sync custom picker
+    const picker = document.getElementById('customColorPicker');
+    if (picker && _skinSelection.color && !_skinSelection.skin) picker.value = _skinSelection.color;
+}
+
+function _buildSkinsGrid() {
+    const grid = document.getElementById('skinsImageGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
+
+    // Usar lista do engine se disponível, senão tentar fetch, senão fallback
+    var skinList = (window._knownSkins && window._knownSkins.length > 0)
+        ? window._knownSkins
+        : null;
+
+    function renderGrid(list) {
+        grid.innerHTML = '';
+        if (!list || list.length === 0) {
+            grid.innerHTML = '<div class="skins-empty"><i class="fas fa-image"></i><br>No skins available</div>';
+            return;
+        }
+        list.forEach(function(name) {
+            const item = document.createElement('div');
+            item.className = 'skin-img-item' + (_skinSelection.skin === name ? ' selected' : '');
+            item.title = name;
+            item.innerHTML = '<img src="skins/' + name + '.png" alt="' + name + '" onerror="this.parentElement.style.display=\'none\'">';
+            item.onclick = function() { selectSkinImage(name); };
+            grid.appendChild(item);
+        });
+    }
+
+    if (skinList) {
+        renderGrid(skinList);
+    } else {
+        // Tentar via PHP
+        fetch('checkdir.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-Requested-With': 'XMLHttpRequest' },
+            body: 'action=test'
+        }).then(function(r) { return r.json(); })
+          .then(function(data) {
+              var list = JSON.parse(data.names || '[]');
+              window._knownSkins = list;
+              renderGrid(list);
+          }).catch(function() {
+              // Fallback: mostrar doge que sabemos que existe
+              renderGrid(['doge']);
+          });
     }
 }
+
+function selectPresetColor(hex) {
+    _skinSelection.color = hex;
+    _skinSelection.skin  = null;
+    document.querySelectorAll('.color-swatch').forEach(function(sw) {
+        sw.classList.toggle('selected', sw.style.background === hex || sw.title === hex);
+    });
+    document.querySelectorAll('.skin-img-item').forEach(function(el) { el.classList.remove('selected'); });
+    _updateSkinPreview();
+}
+
+function selectCustomColor(hex) {
+    _skinSelection.color = hex;
+    _skinSelection.skin  = null;
+    document.querySelectorAll('.color-swatch').forEach(function(sw) { sw.classList.remove('selected'); });
+    document.querySelectorAll('.skin-img-item').forEach(function(el) { el.classList.remove('selected'); });
+    _updateSkinPreview();
+}
+
+function selectSkinImage(name) {
+    _skinSelection.skin  = name;
+    _skinSelection.color = null;
+    document.querySelectorAll('.skin-img-item').forEach(function(el) {
+        el.classList.toggle('selected', el.title === name);
+    });
+    document.querySelectorAll('.color-swatch').forEach(function(sw) { sw.classList.remove('selected'); });
+    _updateSkinPreview();
+}
+
+function clearSkinSelection() {
+    _skinSelection.color = null;
+    _skinSelection.skin  = null;
+    document.querySelectorAll('.color-swatch, .skin-img-item').forEach(function(el) { el.classList.remove('selected'); });
+    _updateSkinPreview();
+}
+
+function _updateSkinPreview() {
+    const cell = document.getElementById('skinPreviewCell');
+    const label = document.getElementById('skinPreviewLabel');
+    const name  = document.getElementById('skinPreviewName');
+    if (!cell) return;
+
+    if (_skinSelection.skin) {
+        cell.style.background = '#555';
+        cell.innerHTML = '<img src="skins/' + _skinSelection.skin + '.png" alt="' + _skinSelection.skin + '">';
+        if (name) name.textContent = _skinSelection.skin;
+    } else if (_skinSelection.color) {
+        cell.style.background = _skinSelection.color;
+        cell.innerHTML = '<span id="skinPreviewLabel" style="color:#fff;font-size:22px;">●</span>';
+        if (name) name.textContent = _skinSelection.color;
+    } else {
+        cell.style.background = '#888';
+        cell.innerHTML = '<span id="skinPreviewLabel" style="color:#fff;font-size:22px;">?</span>';
+        if (name) name.textContent = 'No selection';
+    }
+
+    // Atualizar o skin-box no menu principal
+    const skinBox = document.querySelector('.skin-box');
+    if (skinBox) {
+        if (_skinSelection.skin) {
+            skinBox.innerHTML = '<img src="skins/' + _skinSelection.skin + '.png" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">';
+        } else if (_skinSelection.color) {
+            skinBox.style.background = _skinSelection.color;
+            skinBox.innerHTML = '';
+        } else {
+            skinBox.style.background = '';
+            skinBox.innerHTML = '<i class="fas fa-plus"></i>';
+        }
+    }
+}
+
+function applySkinSelection() {
+    if (_skinSelection.color) {
+        localStorage.setItem('player_color', _skinSelection.color);
+        localStorage.removeItem('player_skin');
+    } else if (_skinSelection.skin) {
+        localStorage.setItem('player_skin', _skinSelection.skin);
+        localStorage.removeItem('player_color');
+    } else {
+        localStorage.removeItem('player_color');
+        localStorage.removeItem('player_skin');
+    }
+    // Expor para o engine
+    window.playerSelectedColor = _skinSelection.color || null;
+    window.playerSelectedSkin  = _skinSelection.skin  || null;
+
+    // Se estiver em jogo, reenviar nick imediatamente para sincronizar com o servidor
+    if (window.wsIsOpen && window.wsIsOpen()) {
+        window.sendNickName();
+    }
+
+    closeSkinsModal();
+}
+
+// Carregar seleção salva ao iniciar
+(function() {
+    var savedColor = localStorage.getItem('player_color');
+    var savedSkin  = localStorage.getItem('player_skin');
+    if (savedColor) { _skinSelection.color = savedColor; window.playerSelectedColor = savedColor; }
+    if (savedSkin)  { _skinSelection.skin  = savedSkin;  window.playerSelectedSkin  = savedSkin; }
+    // Atualizar skin-box após DOM pronto
+    document.addEventListener('DOMContentLoaded', function() {
+        _updateSkinPreview();
+    });
+})();
+
+
 
 function openMessageModal(title, message, type = 'info') {
     const modal = document.getElementById('messageModal');

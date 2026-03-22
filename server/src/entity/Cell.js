@@ -30,7 +30,17 @@ module.exports = Cell;
 
 Cell.prototype.getName = function() {
     if (this.owner) {
-        return this.owner.name;
+        var name = this.owner.name;
+        // Incluir prefixo de skin/cor para que outros clientes possam renderizar
+        if (this.owner.skinName) {
+            return '%' + this.owner.skinName + '|' + name;
+        } else if (this.owner.customColor) {
+            var r = ('0' + this.owner.customColor.r.toString(16)).slice(-2);
+            var g = ('0' + this.owner.customColor.g.toString(16)).slice(-2);
+            var b = ('0' + this.owner.customColor.b.toString(16)).slice(-2);
+            return '\x01' + r + g + b + '|' + name;
+        }
+        return name;
     } else {
         return "";
     }

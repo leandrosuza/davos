@@ -16,6 +16,7 @@ function PlayerTracker(gameServer, socket) {
 
     this.nodeAdditionQueue = [];
     this.nodeDestroyQueue = [];
+    this.forceUpdateQueue = []; // Nodes to force-resend (e.g. color/skin change)
     this.visibleNodes = [];
 
     this.cells = [];
@@ -147,6 +148,13 @@ PlayerTracker.prototype.update = function() {
 
     var updateNodes = []; // Nodes that need to be updated via packet
     var nonVisibleNodes = []; // Nodes that are not visible anymore
+
+    // Force-update nodes (e.g. color/skin changed for another player)
+    for (var i = 0; i < this.forceUpdateQueue.length; i++) {
+        var fn = this.forceUpdateQueue[i];
+        if (fn && updateNodes.indexOf(fn) === -1) updateNodes.push(fn);
+    }
+    this.forceUpdateQueue = [];
 
     // Update & remove nodes if necessary
     for (var i = 0; i < this.nodeAdditionQueue.length; i++) {

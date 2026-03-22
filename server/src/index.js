@@ -44,13 +44,13 @@ function startServer() {
     };
 }
 
-// Initialize the server console
-if (showConsole) {
+// Initialize the server console (only when stdin is a TTY)
+if (showConsole && process.stdin.isTTY) {
     setTimeout(function() {
-    var input = new AsyncConsole('> ',function(command) {
-        parseCommands(command);
-    })
-    },200)
+        var input = new AsyncConsole('> ', function(command) {
+            parseCommands(command);
+        });
+    }, 200);
 }
 
 // Console functions

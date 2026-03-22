@@ -5,9 +5,10 @@
   "main": "server/src/index.js",
   "scripts": {
     "start": "node server/src/index.js",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "server": "node server/src/index.js",
-    "client": "npx http-server client -p 3000 --cors",
+    "dev:all": "concurrently --names \"SERVER,CLIENT\" --prefix-colors \"cyan.bold,magenta.bold\" --prefix \"[{name}]\" \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "nodemon --watch server/src --ext js,json,ini server/src/index.js",
+    "dev:client": "npx http-server client -p 3000 --cors",
+    "start:server": "node server/src/index.js",
     "install:all": "cd server && npm install"
   },
   "dependencies": {
@@ -17,7 +18,8 @@
     "ws": "latest"
   },
   "devDependencies": {
-    "concurrently": "^8.2.0"
+    "concurrently": "^8.2.0",
+    "nodemon": "^3.1.14"
   },
   "engines": {
     "node": ">=18.0.0"

@@ -25,10 +25,11 @@ PacketHandler.prototype.handleMessage = function(message) {
             if (this.protocolVersion == 5) {
                 // Check for invalid packets
                 if ((message.length + 1) % 2 == 1) break;
-                var name = message.slice(1, message.length - 1).toString('ucs2').substr(0, this.gameServer.config.playerMaxNickLength);
+                // Ler o nick completo sem truncar — o setNickname vai truncar só o displayName
+                var name = message.slice(1, message.length - 1).toString('ucs2');
                 this.setNickname(name);
             } else {
-                var name = message.slice(1, message.length - 1).toString('utf-8').substr(0, this.gameServer.config.playerMaxNickLength);
+                var name = message.slice(1, message.length - 1).toString('utf-8');
                 this.setNickname(name);
             }
             break;
@@ -108,17 +109,71 @@ PacketHandler.prototype.handleMessage = function(message) {
 
 PacketHandler.prototype.setNickname = function(newNick) {
     var client = this.socket.playerTracker;
-    // Set name (changing name while playing is accepted)
-    client.setName(newNick);
+
+    // Parsear prefixos de skin e cor customizada
+    // Formato skin:  "%skinname|nick"
+    // Formato cor:   "\x01rrggbb|nick"
+    var skinName = null;
+    var customColor = null;
+    var displayName = newNick;
+
+    if (newNick.length > 0 && newNick.charCodeAt(0) === 0x01) {
+        // Cor customizada: \x01rrggbb|nick
+        var sep = newNick.indexOf('|');
+        if (sep > 0) {
+            var hex = newNick.substring(1, sep);
+            displayName = newNick.substring(sep + 1);
+            var r = parseInt(hex.substring(0, 2), 16);
+            var g = parseInt(hex.substring(2, 4), 16);
+            var b = parseInt(hex.substring(4, 6), 16);
+            if (!isNaN(r) && !isNaN(g) && !isNaN(b)) {
+                customColor = { r: r, g: g, b: b };
+            }
+        }
+    } else if (newNick.length > 0 && newNick.charAt(0) === '%') {
+        // Skin de imagem: %skinname|nick
+        var sep = newNick.indexOf('|');
+        if (sep > 0) {
+            skinName = newNick.substring(1, sep);
+            displayName = newNick.substring(sep + 1);
+        } else {
+            skinName = newNick.substring(1);
+            displayName = '';
+        }
+    }
+
+    client.skinName = skinName;
+    client.customColor = customColor;
+    client.setName(displayName.substr(0, this.gameServer.config.playerMaxNickLength));
+
+    // Aplicar cor customizada nas células existentes
+    if (customColor) {
+        for (var i = 0; i < client.cells.length; i++) {
+            client.cells[i].setColor(customColor);
+        }
+    }
+
+    // Forçar reenvio das células para todos os outros clientes (cor/skin mudou)
+    if (client.cells.length > 0) {
+        var gameServer = this.gameServer;
+        var socket = this.socket;
+        gameServer.clients.forEach(function(otherSocket) {
+            if (!otherSocket || otherSocket === socket) return;
+            var otherTracker = otherSocket.playerTracker;
+            if (!otherTracker) return;
+            for (var i = 0; i < client.cells.length; i++) {
+                var cell = client.cells[i];
+                if (otherTracker.visibleNodes.indexOf(cell) !== -1 &&
+                    otherTracker.forceUpdateQueue.indexOf(cell) === -1) {
+                    otherTracker.forceUpdateQueue.push(cell);
+                }
+            }
+        });
+    }
 
     if (client.cells.length < 1) {
-        // Clear client's nodes
         this.socket.sendPacket(new Packet.ClearNodes());
-
-        // If client has no cells... then spawn a player
         this.gameServer.gameMode.onPlayerSpawn(this.gameServer, client);
-
-        // Turn off spectate mode
         client.spectate = false;
     }
 };

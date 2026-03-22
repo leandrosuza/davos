@@ -312,10 +312,7 @@
         hasOverlay = false;
         wjQuery("#overlays").hide();
         document.body.classList.add('game-active'); // Adiciona classe quando jogo inicia
-        // Reiniciar loop de animação quando menu é fechado
-        if (wHandle.requestAnimationFrame) {
-            wHandle.requestAnimationFrame(redrawGameScene);
-        }
+        // O loop de animação já está rodando via gameLoop — não iniciar outro
         // O chat não é mais mostrado automaticamente - é um modal controlado pela tecla Q
     }
 
@@ -324,6 +321,8 @@
         userNickName = null;
         document.body.classList.remove('game-active');
         wjQuery("#overlays").fadeIn(arg ? 200 : 3E3);
+        // Limpar sessão ativa ao voltar ao menu
+        sessionStorage.removeItem('davos_playing');
     }
 
     function showConnecting() {
@@ -354,6 +353,7 @@
         leaderBoard = [];
         mainCanvas = teamScores = null;
         userScore = 0;
+        _nickSent = false; // Reset para enviar nick após novo handshake
         log.info("Connecting to " + wsUrl + "..");
         ws = new WebSocket(wsUrl);
         ws.binaryType = "arraybuffer";
@@ -382,7 +382,17 @@
         msg.setUint8(0, 255);
         msg.setUint32(1, 0, true);
         wsSend(msg);
-        sendNickName();
+
+        // Reconexão automática: se o jogador estava em partida antes de recarregar
+        var wasPlaying = sessionStorage.getItem('davos_playing');
+        var savedNick  = sessionStorage.getItem('davos_nick');
+        if (wasPlaying && hasOverlay) {
+            userNickName = savedNick || '';
+            hideOverlays();
+            userScore = 0;
+        }
+
+        // NÃO enviar nick aqui — aguardar SetBorder (case 64) que confirma protocolo negociado
         log.info("Connection successful!");
         // Initialize FPS tracking
         lastFpsUpdate = Date.now();
@@ -492,6 +502,11 @@
                     nodeX = posX;
                     nodeY = posY;
                     viewZoom = posSize;
+                }
+                // Protocolo negociado — agora é seguro enviar o nick com prefixos
+                if (!_nickSent) {
+                    _nickSent = true;
+                    sendNickName();
                 }
                 break;
             case 99:
@@ -656,6 +671,37 @@
                 name += String.fromCharCode(char);
             }
 
+            // Parsear prefixos de skin/cor enviados pelo cliente
+            // Formato skin:  "%skinname|displayname"
+            // Formato cor:   "\x01rrggbb|displayname"
+            if (name.length > 0 && name.charCodeAt(0) === 1) {
+                // \x01 = código 1 em UTF-16
+                var sep = name.indexOf('|');
+                if (sep > 0) {
+                    var hex = name.substring(1, sep);
+                    if (hex.length === 6) {
+                        var r = parseInt(hex.substring(0, 2), 16);
+                        var g = parseInt(hex.substring(2, 4), 16);
+                        var b = parseInt(hex.substring(4, 6), 16);
+                        if (!isNaN(r) && !isNaN(g) && !isNaN(b)) {
+                            colorstr = '#' + hex;
+                        }
+                    }
+                    name = name.substring(sep + 1);
+                }
+            } else if (name.length > 0 && name.charAt(0) === '%') {
+                var sep = name.indexOf('|');
+                if (sep > 0) {
+                    _skin = name.substring(1, sep);
+                    name = name.substring(sep + 1);
+                } else {
+                    // sem separador: tudo é skin, nome vazio
+                    _skin = name.substring(1);
+                    name = '';
+                }
+                if (_skin && -1 == knownNameDict.indexOf(_skin)) knownNameDict.push(_skin);
+            }
+
             var node = null;
             if (nodes.hasOwnProperty(nodeid)) {
                 node = nodes[nodeid];
@@ -664,12 +710,17 @@
                 node.oy = node.y;
                 node.oSize = node.size;
                 node.color = colorstr;
+                node._skin = _skin; // Sempre atualizar (inclusive limpar quando vazio)
+                // Garantir que skin de outros jogadores está no knownNameDict
+                if (_skin && -1 == knownNameDict.indexOf(_skin)) knownNameDict.push(_skin);
             } else {
                 node = new Cell(nodeid, posX, posY, size, colorstr, name, _skin);
                 nodelist.push(node);
                 nodes[nodeid] = node;
                 node.ka = posX;
                 node.la = posY;
+                // Garantir que skin está no knownNameDict ao criar node
+                if (_skin && -1 == knownNameDict.indexOf(_skin)) knownNameDict.push(_skin);
             }
             node.isVirus = flagVirus;
             node.isEjected = flagEjected;
@@ -721,10 +772,24 @@
 
     function sendNickName() {
         if (wsIsOpen() && null != userNickName) {
-            var msg = prepareData(1 + 2 * userNickName.length);
+            // Montar nick com skin e/ou cor para sincronizar com outros jogadores
+            // Formato: "nick" normal, ou "%skinname" para skin de imagem
+            // Para cor: enviamos como metadata no nick: "\x01rrggbb|nick"
+            var nick = userNickName;
+
+            if (wHandle.playerSelectedSkin) {
+                // Prefixo % indica skin de imagem — o servidor repassa para todos
+                nick = '%' + wHandle.playerSelectedSkin + '|' + userNickName;
+            } else if (wHandle.playerSelectedColor) {
+                // Prefixo \x01 + hex indica cor customizada
+                var hex = wHandle.playerSelectedColor.replace('#', '');
+                nick = '\x01' + hex + '|' + userNickName;
+            }
+
+            var msg = prepareData(1 + 2 * nick.length);
             msg.setUint8(0, 0);
-            for (var i = 0; i < userNickName.length; ++i) msg.setUint16(1 + 2 * i, userNickName.charCodeAt(i), true);
-            wsSend(msg)
+            for (var i = 0; i < nick.length; ++i) msg.setUint16(1 + 2 * i, nick.charCodeAt(i), true);
+            wsSend(msg);
         }
     }
 
@@ -887,6 +952,8 @@
     }
 
     function drawGameScene() {
+        // Guard: ctx pode não estar inicializado ainda
+        if (!ctx || !canvasWidth || !canvasHeight) return;
         var a, oldtime = Date.now();
         ++cb;
         timestamp = oldtime;
@@ -977,8 +1044,8 @@
             ctx.save();
             ctx.globalAlpha = hudFadeAlpha;
             
-            lbCanvas && lbCanvas.width && ctx.drawImage(lbCanvas, canvasWidth - lbCanvas.width - 10, 10); // draw Leader Board
-            if (chatCanvas != null) ctx.drawImage(chatCanvas, 0, canvasHeight - chatCanvas.height - 50); // draw Chat
+            lbCanvas && lbCanvas.width && lbCanvas.height && ctx.drawImage(lbCanvas, canvasWidth - lbCanvas.width - 10, 10); // draw Leader Board
+            if (chatCanvas != null && chatCanvas.width > 0 && chatCanvas.height > 0) ctx.drawImage(chatCanvas, 0, canvasHeight - chatCanvas.height - 50); // draw Chat
             
             // Draw Stats (Score, Ping, FPS) on canvas - single line white text
             if (0 != userScore) {
@@ -988,7 +1055,9 @@
                 statsTextObj.setValue(statsStr);
                 var statsCanvas = statsTextObj.render();
                 
-                ctx.drawImage(statsCanvas, 15, 28);
+                if (statsCanvas && statsCanvas.width > 0 && statsCanvas.height > 0) {
+                    ctx.drawImage(statsCanvas, 15, 28);
+                }
             }
             
             ctx.restore();
@@ -1106,6 +1175,18 @@
                     boardLength = 60;
                 boardLength = !drawTeam ? boardLength + 24 * leaderBoard.length : boardLength + 180;
                 var scaleFactor = Math.min(0.22 * canvasHeight, Math.min(200, .3 * canvasWidth)) * 0.005;
+
+                // Detectar tema atual
+                var isDark = document.documentElement.classList.contains('dark-theme') ||
+                             document.body.classList.contains('dark-theme');
+
+                // Cores baseadas no tema
+                var bgColor      = isDark ? "rgba(15, 18, 28, 0.95)" : "rgba(255, 255, 255, 0.95)";
+                var borderColor  = isDark ? "rgba(0, 200, 255, 0.6)"  : "rgba(0, 150, 200, 0.6)";
+                var separatorColor = isDark ? "rgba(0, 200, 255, 0.3)" : "rgba(0, 150, 200, 0.3)";
+                var titleColor   = isDark ? "#00d4ff" : "#0077aa";
+                var textDefault  = isDark ? "#ffffff"  : "#333333";
+                var textSilver   = isDark ? "#c0c0c0"  : "#666666";
                 
                 // Tamanho do canvas com padding para borda e sombra
                 var padding = 10;
@@ -1122,15 +1203,15 @@
                 var height = boardLength;
                 var borderRadius = 10;
                 
-                // Sombra (similar ao chat: box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6))
+                // Sombra
                 ctx.save();
-                ctx.shadowColor = "rgba(0, 0, 0, 0.6)";
+                ctx.shadowColor = isDark ? "rgba(0, 0, 0, 0.6)" : "rgba(0, 0, 0, 0.2)";
                 ctx.shadowBlur = 15;
                 ctx.shadowOffsetX = 0;
                 ctx.shadowOffsetY = 4;
                 
-                // Fundo escuro semi-transparente (similar ao chat: rgba(15, 18, 28, 0.95))
-                ctx.fillStyle = "rgba(15, 18, 28, 0.95)";
+                // Fundo
+                ctx.fillStyle = bgColor;
                 
                 // Desenhar retângulo com cantos arredondados
                 ctx.beginPath();
@@ -1147,9 +1228,9 @@
                 ctx.fill();
                 ctx.restore();
                 
-                // Borda cyan (similar ao chat: 2px solid rgba(0, 200, 255, 0.6))
+                // Borda
                 ctx.save();
-                ctx.strokeStyle = "rgba(0, 200, 255, 0.6)";
+                ctx.strokeStyle = borderColor;
                 ctx.lineWidth = 2;
                 
                 // Desenhar borda com cantos arredondados
@@ -1169,13 +1250,13 @@
                 
                 // Título "Leaderboard"
                 ctx.globalAlpha = 1;
-                ctx.fillStyle = "#00d4ff"; // Cor cyan para o título
+                ctx.fillStyle = titleColor;
                 ctx.font = "bold 24px Ubuntu";
                 var title = "Leaderboard";
                 ctx.fillText(title, offsetX + width * 0.5 - ctx.measureText(title).width * 0.5, offsetY + 35);
                 
                 // Linha separadora sob o título
-                ctx.strokeStyle = "rgba(0, 200, 255, 0.3)";
+                ctx.strokeStyle = separatorColor;
                 ctx.lineWidth = 1;
                 ctx.beginPath();
                 ctx.moveTo(offsetX + 10, offsetY + 45);
@@ -1194,15 +1275,15 @@
                         
                         // Cor do texto baseada no ranking
                         if (me) {
-                            ctx.fillStyle = "#ff6b6b"; // Vermelho claro para o jogador
+                            ctx.fillStyle = "#ff6b6b"; // Vermelho claro para o jogador (igual nos dois temas)
                         } else if (b === 0) {
                             ctx.fillStyle = "#ffd700"; // Dourado para #1
                         } else if (b === 1) {
-                            ctx.fillStyle = "#c0c0c0"; // Prata para #2
+                            ctx.fillStyle = textSilver; // Prata/cinza adaptado ao tema
                         } else if (b === 2) {
-                            ctx.fillStyle = "#cd7f32"; // Bronze para #3
+                            ctx.fillStyle = "#cd7f32"; // Bronze
                         } else {
-                            ctx.fillStyle = "#ffffff"; // Branco para os demais
+                            ctx.fillStyle = textDefault; // Branco (dark) ou cinza escuro (light)
                         }
                         
                         var text = !noRanking ? (b + 1) + ". " + name : name;
@@ -1308,7 +1389,8 @@
         ping = 0,
         lastPingTime = 0,
         pingSentTime = 0,
-        hudFadeAlpha = 1;  // Alpha para fade do HUD quando menu abre/fecha
+        hudFadeAlpha = 1,  // Alpha para fade do HUD quando menu abre/fecha
+        _nickSent = false; // Flag para enviar nick apenas após protocolo negociado
     splitIcon.src = "assets/img/split.png";
     ejectIcon.src = "assets/img/feed.png";
     var wCanvas = document.createElement("canvas");
@@ -1318,8 +1400,14 @@
         hideOverlays();
         userNickName = arg;
         sendNickName();
-        userScore = 0
+        userScore = 0;
+        // Salvar sessão ativa para reconexão automática
+        sessionStorage.setItem('davos_playing', '1');
+        sessionStorage.setItem('davos_nick', arg || '');
     };
+    // Expor sendNickName para uso externo (ex: ao mudar skin/cor em jogo)
+    wHandle.sendNickName = function() { sendNickName(); };
+    wHandle.wsIsOpen    = function() { return wsIsOpen(); };
     wHandle.setSkins = function(arg) {
         showSkin = arg
     };
@@ -2362,6 +2450,8 @@
                     knownNameDict.push(response[i]);
                 }
             }
+            // Expor lista de skins para o modal de customização
+            wHandle._knownSkins = response.slice();
         }
     });
 
@@ -2575,9 +2665,14 @@
                     ctx.fillStyle = "#FFFFFF";
                     ctx.strokeStyle = "#AAAAAA";
                 } else {
-                    ctx.fillStyle = this.color;
+                    var isMyCell = -1 != playerCells.indexOf(this);
+                    // Cor: próprio jogador usa playerSelectedColor se definida, outros usam this.color (vem do servidor)
+                    var cellColor = (isMyCell && wHandle.playerSelectedColor && !wHandle.playerSelectedSkin)
+                        ? wHandle.playerSelectedColor
+                        : this.color;
+                    ctx.fillStyle = cellColor;
                     if (b) ctx.strokeStyle = this.getStrokeColor();
-                    else ctx.strokeStyle = this.color;
+                    else ctx.strokeStyle = cellColor;
                 }
 				ctx.beginPath();
                 if (b) {
@@ -2596,13 +2691,18 @@
                     }
                 }
                 ctx.closePath();
-                var skinName = this.name.toLowerCase();
 
-                // Load Premium skin if we have one set
-                if (typeof this._skin != 'undefined' && this._skin != '') {
-                    if (this._skin[0] == '%') {
-                        skinName = this._skin.substring(1);
-                    }
+                // Determinar skinName: próprio jogador usa playerSelectedSkin, outros usam _skin do servidor
+                var isMyCell = -1 != playerCells.indexOf(this);
+                var skinName = '';
+
+                if (isMyCell && wHandle.playerSelectedSkin) {
+                    // Próprio jogador: skin escolhida localmente
+                    skinName = wHandle.playerSelectedSkin;
+                    if (-1 == knownNameDict.indexOf(skinName)) knownNameDict.push(skinName);
+                } else if (typeof this._skin != 'undefined' && this._skin != '') {
+                    // Outro jogador: skin vinda do servidor (prefixo % já removido no parse)
+                    skinName = (this._skin[0] == '%') ? this._skin.substring(1) : this._skin;
                 }
 
                 if (showSkin && skinName != '' && -1 != knownNameDict.indexOf(skinName)) {
