@@ -1,12 +1,10 @@
 {
   "name": "davos",
-  "description": "sadsadasd",
+  "description": "sadasdasd",
   "language": "JavaScript",
-  "category": "RH",
-  "tags": [
-    "sadasdsa"
-  ],
+  "category": "Agendamento",
+  "tags": [],
   "type": "paid",
-  "price": 42343,
-  "publishedAt": "2026-04-08T11:46:17.799Z"
+  "price": 234,
+  "publishedAt": "2026-04-08T11:50:36.063Z"
 }
